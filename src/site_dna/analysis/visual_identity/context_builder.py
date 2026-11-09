@@ -91,14 +91,11 @@ class VisualIdentityContextBuilder:
         except Exception as exc:
             raise ContextValidationError(f"Malformed crawl.json artifact: {exc}") from exc
 
-        # 3. Verify run ID alignment (warn and normalize if different)
+        # 3. Verify run ID alignment
         if visual_result.crawl_run_id != resolved_crawl_id:
-            logger.warning(
-                "Crawl run ID mismatch: visual references %s, crawl is %s. Normalizing.",
-                visual_result.crawl_run_id,
-                resolved_crawl_id,
+            raise ContextValidationError(
+                f"Crawl run ID mismatch: visual references {visual_result.crawl_run_id}, crawl is {resolved_crawl_id}"
             )
-            visual_result.crawl_run_id = resolved_crawl_id
 
         # 4. Extract business context from Phase 02
         seed_page = crawl_result.pages[0] if crawl_result.pages else None

@@ -73,12 +73,7 @@ async def analyze_competitors_endpoint(
         )
 
     total_comps = len(request.competitor_urls) + len(request.competitor_run_ids or [])
-    if total_comps < 1:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="At least one competitor URL or run ID must be provided.",
-        )
-
+    # If no competitors provided, context_builder will auto-discover industry benchmarks
     if total_comps > settings.competitor_analysis_hard_max_competitors:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
