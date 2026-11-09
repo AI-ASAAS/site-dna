@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>اتصل بنا — Acme Global</title>
+  <meta name="description" content="تواصل مع فريق المبيعات والدعم الفني.">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="/">الرئيسية</a>
+      <a href="/about">من نحن</a>
+      <a href="/contact">اتصل بنا</a>
+    </nav>
+  </header>
+  <main>
+    <h1>تواصل معنا اليوم</h1>
+    <h2>نحن هنا للإجابة على جميع استفساراتكم</h2>
+    <p>بريدنا الإلكتروني: support@site-dna-test.local | الهاتف: +966 11 000 0000</p>
+
+    <!-- Basic Contact Form: MUST NEVER BE SUBMITTED BY CRAWLER -->
+    <form action="/api/contact-submit" method="POST">
+      <input type="text" name="full_name" placeholder="الاسم الكامل">
+      <input type="email" name="email_address" placeholder="البريد الإلكتروني">
+      <textarea name="inquiry_message" placeholder="تفاصيل الطلب"></textarea>
+      <button type="submit">إرسال الرسالة</button>
+    </form>
+  </main>
+  <footer>
+    <a href="/privacy">سياسة الخصوصية</a>
+  </footer>
+</body>
+</html>

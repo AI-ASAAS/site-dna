@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inaccessible Fixture Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    /* Focus outline suppression without focus-visible */
+    *:focus { outline: none !important; }
+    /* Low contrast violation */
+    .low-contrast-text { color: #888888; background-color: #999999; font-size: 14px; }
+    .bad-button { width: 14px; height: 14px; display: inline-block; cursor: pointer; }
+    .sticky-header { position: fixed; top: 0; left: 0; right: 0; height: 100px; background: rgba(0,0,0,0.9); z-index: 999; }
+  </style>
+</head>
+<body>
+  <div class="sticky-header">
+    <div onclick="alert('clicked')" class="bad-button">X</div>
+  </div>
+
+  <!-- Missing <main> landmark -->
+  <div id="content" style="margin-top: 120px;">
+    <!-- Missing h1, skipping levels -->
+    <h2>قسم فرعي بدون عنوان رئيسي</h2>
+    <h4>عنوان فرعي يقفز مستويين مباشرة</h4>
+
+    <!-- Images without alt or with bad attributes -->
+    <img src="/banner.png">
+    <img src="/chart.png" alt="">
+
+    <!-- Fake button without accessible name -->
+    <div onclick="doSomething()" class="btn-fake">انقر للمتابعة</div>
+
+    <!-- Positive tabindex anti-pattern -->
+    <input type="text" tabindex="3" placeholder="حقل بريد إلكتروني بدون تسمية">
+    <button tabindex="2">زر بتسلسل موجب</button>
+
+    <!-- Table without headers -->
+    <table>
+      <tr>
+        <td>قيمة 1</td>
+        <td>قيمة 2</td>
+      </tr>
+      <tr>
+        <td>بيان 1</td>
+        <td>بيان 2</td>
+      </tr>
+    </table>
+
+    <!-- Low contrast element -->
+    <p class="low-contrast-text">هذا النص يعاني من ضعف شديد في التباين البصري ضد الخلفية الرمادية.</p>
+
+    <!-- Broken ARIA reference & invalid role -->
+    <div role="navigational" aria-labelledby="non-existent-header-id">
+      <span aria-hidden="true"><button>زر مخفي برمجياً عن التقنيات المساعدة</button></span>
+    </div>
+
+    <!-- Ambiguous link -->
+    <a href="/details">اضغط هنا</a>
+    <a href="/read">read more</a>
+  </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+# Python & Virtual Environments
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment and Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# Testing & Linting
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build & Distribution
+dist/
+build/
+*.egg-info/
+runs/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scratch and test artifacts
+test_*.pdf
+test_*.html
+test_*.png
+/*_verified.png
+/competitors_tab_live.png
+/current_browser_view.png
+/failed_run_contrast_verified.png
+/new_analysis_page_verified.png
+/new_analysis_verified.png
+/report_preview_full.png
+verify_browser.py
+scratch/
+

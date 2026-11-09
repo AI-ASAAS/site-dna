@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Allow: /admin/public
+Crawl-delay: 1.5
+Sitemap: https://example.com/sitemap.xml
+Sitemap: https://example.com/sitemap_index.xml
+
+User-agent: BadBot
+Disallow: /

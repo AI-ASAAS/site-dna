@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>منصة أساس التجريبية - صفحة نموذجية متوافقة مع معايير النفاذ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background-color: #ffffff; color: #111111; font-family: sans-serif; margin: 0; padding: 20px; }
+    :focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+    .skip-link { position: absolute; top: -40px; left: 0; background: #000; color: #fff; padding: 8px; z-index: 100; }
+    .skip-link:focus { top: 0; }
+    .btn { background: #005fcc; color: #ffffff; padding: 12px 24px; border: none; border-radius: 6px; min-width: 44px; min-height: 44px; font-size: 16px; cursor: pointer; }
+    .btn:focus-visible { outline: 3px solid #ffbf47; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+    th { background-color: #f2f2f2; color: #111111; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">انتقل إلى المحتوى الرئيسي</a>
+
+  <header role="banner">
+    <nav aria-label="التنقل الرئيسي">
+      <ul>
+        <li><a href="/">الرئيسية</a></li>
+        <li><a href="/services">الخدمات</a></li>
+        <li><a href="/contact">اتصل بنا</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <h1>مرحباً بكم في منصة أساس للذكاء الاصطناعي</h1>
+    <p>نقدم حلولاً متطورة لتحليل المواقع واستخراج مؤشرات النفاذ الرقمي الشامل وفق معايير WCAG 2.2 الدولية.</p>
+
+    <section aria-labelledby="sec-features">
+      <h2 id="sec-features">المزايا التقنية الأساسية</h2>
+      <p>تضمن المنصة الوصول المتكافئ لجميع فئات المستخدمين.</p>
+      <img src="/img/report-sample.png" alt="رسم بياني يوضح توزيع مؤشرات النفاذ الرقمي عبر 6 أبعاد" width="400" height="250">
+    </section>
+
+    <section aria-labelledby="sec-contact-form">
+      <h2 id="sec-contact-form">طلب تجربة مجانية</h2>
+      <form action="/submit-demo" method="post">
+        <div>
+          <label for="user-name">الاسم الكامل (مطلوب):</label>
+          <input type="text" id="user-name" name="name" required aria-required="true" autocomplete="name">
+        </div>
+        <div>
+          <label for="user-email">البريد الإلكتروني المهني:</label>
+          <input type="email" id="user-email" name="email" required aria-required="true" autocomplete="email" aria-describedby="email-hint">
+          <span id="email-hint">سنرسل لك رابط التفعيل وتقرير الفحص السريع عبر البريد.</span>
+        </div>
+        <div>
+          <button type="submit" class="btn">إرسال طلب التحليل</button>
+        </div>
+      </form>
+    </section>
+
+    <section aria-labelledby="sec-stats">
+      <h2 id="sec-stats">مؤشرات الأداء التاريخية</h2>
+      <table>
+        <caption>مقارنة متوسط سرعة التحليل والدرجات القياسية حسب الفئات</caption>
+        <thead>
+          <tr>
+            <th scope="col">الفئة</th>
+            <th scope="col">متوسط التباين</th>
+            <th scope="col">التوافق مع اللوحة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">الخدمات الحكومية</th>
+            <td>7.2:1</td>
+            <td>100%</td>
+          </tr>
+          <tr>
+            <th scope="row">التجارة الإلكترونية</th>
+            <td>5.4:1</td>
+            <td>96%</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer role="contentinfo">
+    <p>© 2026 أساس للذكاء الاصطناعي. جميع الحقوق محفوظة.</p>
+  </footer>
+</body>
+</html>

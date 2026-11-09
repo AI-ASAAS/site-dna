@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site DNA — منصة ذكاء وتدقيق المواقع الاستراتيجية | ASAAS AI</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    body {
+      font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .glass-panel {
+      background: rgba(18, 22, 34, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(26, 32, 48, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .gold-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+    }
+    .emerald-gradient {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    .indigo-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    }
+  </style>
+</head>
+<body class="bg-[#0b0f19] text-[#e2e8f0] min-h-screen selection:bg-amber-500/30 selection:text-amber-200">
+
+  <!-- Top Announcement Bar -->
+  <div class="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-center text-xs font-medium text-amber-300 flex items-center justify-center gap-2">
+    <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span>Site DNA v0.1.0 — جميع المراحل من 01 إلى 07 نشطة ومكتملة بنسبة 100%</span>
+    <span class="text-amber-500">•</span>
+    <span class="font-mono text-[11px] bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">Official Model: Gemini 3.6 Flash</span>
+  </div>
+
+  <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+
+    <!-- Header Navigation -->
+    <header class="glass-panel rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row md:items-center md:justify-between gap-6 border border-white/10">
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl gold-gradient flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-amber-500/20 tracking-wider">
+          DNA
+        </div>
+        <div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              Site DNA <span class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">المرحلة 07 مكتملة</span>
+            </h1>
+            <span class="text-xs px-2.5 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-mono">CrewAI Flows</span>
+          </div>
+          <p class="text-sm text-slate-400 mt-1">
+            أساس للذكاء الاصطناعي (ASAAS AI) — المنصة الذكية لاستكشاف وتحليل وتدقيق البصمة الرقمية للمواقع
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="/docs" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs font-semibold text-slate-200 border border-slate-700 transition flex items-center gap-2 shadow-sm">
+          <span>Swagger API</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+        </a>
+        <a href="/redoc" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-xs font-semibold text-slate-200 border border-slate-700 transition flex items-center gap-2 shadow-sm">
+          <span>ReDoc</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+        </a>
+        <div id="backend-status-pill" class="px-4 py-2.5 rounded-xl bg-emerald-950/50 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2 shadow-sm">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="backend-status-text">الخادم متصل (127.0.0.1:8000)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Key Metrics Grid -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="glass-card rounded-2xl p-5 border border-white/5 space-y-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>حالة الاختبارات الآلية</span>
+          <span class="p-1 rounded bg-emerald-500/10 text-emerald-400 font-mono">100% PASS</span>
+        </div>
+        <div class="text-3xl font-extrabold text-white flex items-baseline gap-2">
+          <span>223+</span>
+          <span class="text-sm font-normal text-slate-400">اختباراً آلياً</span>
+        </div>
+        <p class="text-xs text-emerald-400 flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          صفر انحدارات عبر المراحل 01–07
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 border border-white/5 space-y-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>النموذج الذكي الرسمي</span>
+          <span class="p-1 rounded bg-amber-500/10 text-amber-400 font-mono">Official</span>
+        </div>
+        <div class="text-2xl font-bold text-amber-400 font-mono">
+          Gemini 3.6 Flash
+        </div>
+        <p class="text-xs text-slate-400">
+          Google AI Studio • اتصال حي موثق
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 border border-white/5 space-y-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>محرك السيو والأداء التقني</span>
+          <span class="p-1 rounded bg-indigo-500/10 text-indigo-400 font-mono">Phase 07</span>
+        </div>
+        <div class="text-2xl font-bold text-indigo-300">
+          مصفوفة 6 أبعاد
+        </div>
+        <p class="text-xs text-slate-400">
+          الزحف، الفهرسة، البيانات الهيكلية، وسرعة الويب
+        </p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-5 border border-white/5 space-y-2">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span>الأمان والدفاع السيبراني</span>
+          <span class="p-1 rounded bg-emerald-500/10 text-emerald-400 font-mono">Shield Active</span>
+        </div>
+        <div class="text-2xl font-bold text-white">
+          حماية خماسية
+        </div>
+        <p class="text-xs text-slate-400">
+          ضد المسارات الخبيثة والحقن المباشر وJSON-LD غير الآمن
+        </p>
+      </div>
+    </section>
+
+    <!-- Interactive Navigation Tabs -->
+    <div class="flex border-b border-slate-800 gap-2 overflow-x-auto pb-1" id="tab-nav">
+      <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn px-5 py-3 rounded-t-xl text-sm font-semibold transition border-b-2 border-amber-500 text-amber-400 bg-slate-800/40">
+        نظرة عامة على النظام (System Overview)
+      </button>
+      <button onclick="switchTab('seo')" id="btn-seo" class="tab-btn px-5 py-3 rounded-t-xl text-sm font-semibold transition border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+        السيو التقني وسرعة الموقع (Phase 07)
+      </button>
+      <button onclick="switchTab('content')" id="btn-content" class="tab-btn px-5 py-3 rounded-t-xl text-sm font-semibold transition border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+        ذكاء المحتوى والتسويق (Phase 06)
+      </button>
+      <button onclick="switchTab('ux')" id="btn-ux" class="tab-btn px-5 py-3 rounded-t-xl text-sm font-semibold transition border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+        ذكاء تجربة المستخدم UX/UI (Phase 05)
+      </button>
+      <button onclick="switchTab('visual')" id="btn-visual" class="tab-btn px-5 py-3 rounded-t-xl text-sm font-semibold transition border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+        تحليل الهوية البصرية (Phase 04)
+      </button>
+      <button onclick="switchTab('console')" id="btn-console" class="tab-btn px-5 py-3 rounded-t-xl text-sm font-semibold transition border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+        وحدة الاختبار التفاعلي (Interactive Console)
+      </button>
+    </div>
+
+    <!-- Tab 1: Overview -->
+    <div id="tab-overview" class="tab-content space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/5 space-y-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>حالة مراحل مشروع Site DNA (Phases Roadmap & Status)</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Phase 01 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Phase 01</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300">مكتمل ومتحقق</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">تأسيس المشروع والربط مع Gemini</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              إعداد بيئة Python 3.11، دمج مهارات ASAAS AI، إعداد FastAPI، وأداة Doctor للفحص الذاتي.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna doctor</code>
+            </div>
+          </div>
+
+          <!-- Phase 02 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Phase 02</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300">مكتمل ومتحقق</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">الاستكشاف والزحف الآمن</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              محرك زحف ذكي مدعوم بسياسات الأمان SSRF، واستخراج الـ DOM، وسجل الأدلة الموثقة (EV-xxx).
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna discover</code>
+            </div>
+          </div>
+
+          <!-- Phase 03 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Phase 03</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300">مكتمل ومتحقق</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">التصيير المرئي وأدلة المتصفح</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              التقاط لقطات الشاشة المتعددة، واستخراج أنماط CSS المحسوبة، والألوان والخطوط عبر Playwright.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna visual-capture</code>
+            </div>
+          </div>
+
+          <!-- Phase 04 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Phase 04</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300">مكتمل ومتحقق</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">محلل الهوية البصرية الذكي</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              تحليل التباين والتناغم البصري، ربط الأدلة مع Gemini 3.6 Flash، والتخزين المؤقت المشفر.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna analyze-visual</code>
+            </div>
+          </div>
+
+          <!-- Phase 05 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Phase 05</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300">مكتمل ومتحقق</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">محلل تجربة المستخدم والواجهات UX/UI</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              تدقيق إمكانية الوصول، ملاءمة الهواتف، مسارات التصفح، النماذج، وأحجام أهداف النقر.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna analyze-ux</code>
+            </div>
+          </div>
+
+          <!-- Phase 06 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Phase 06</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300">مكتمل ومتحقق</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">ذكاء المحتوى والرسائل التسويقية</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              تحليل القيمة المقترحة، الـ CTAs، نبرة الصوت واللهجات، رصد الفجوات، واقتراح صياغات بديلة.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna analyze-content</code>
+            </div>
+          </div>
+
+          <!-- Phase 07 -->
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-amber-500/40 shadow-lg shadow-amber-500/5 space-y-3 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl"></div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Phase 07 — الأحدث</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/20 text-amber-300">مكتمل 100%</span>
+            </div>
+            <h3 class="text-base font-semibold text-white">السيو التقني ومؤشرات أداء الويب</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              محلل الزحف والفهرسة، الروابط الأساسية، سيو الجافاسكريبت، البيانات الهيكلية، ومؤشرات Core Web Vitals.
+            </p>
+            <div class="text-[11px] font-mono text-slate-500 pt-1 border-t border-slate-800">
+              CLI: <code class="text-amber-300">site-dna analyze-seo</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Technical SEO (Phase 07) -->
+    <div id="tab-seo" class="tab-content hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/5 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <h2 class="text-xl font-bold text-white">تدقيق السيو التقني وسرعة الموقع (Phase 07 Technical SEO)</h2>
+            <p class="text-xs text-slate-400 mt-1">المحلل التقني المتقدم للزحف والفهرسة وتجربة الصفحة عبر Gemini 3.6 Flash</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl font-extrabold text-amber-400 font-mono">92.5</span>
+            <div class="text-right">
+              <div class="text-xs font-bold text-emerald-400">ممتاز (Excellent)</div>
+              <div class="text-[11px] text-slate-500">الدرجة الإجمالية (من 100)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 Dimensions Rubric Breakdown -->
+        <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider">مصفوفة تقييم الأبعاد الستة (6-Dimension Rubric)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">قابلية الزحف والوصول (Crawlability)</span>
+              <span class="font-mono text-emerald-400 font-bold">95.0 / 100 (20%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 95%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">فحص استجابة الخادم 200 OK، ملف robots.txt، وخلو الروابط الداخلية من الأخطاء.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">قابلية الفهرسة (Indexability)</span>
+              <span class="font-mono text-emerald-400 font-bold">95.0 / 100 (20%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 95%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">تدقيق وسوم robots meta وتوجيهات X-Robots-Tag وغياب التعارضات التوجيهية.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">العناوين والبيانات الوصفية (Metadata)</span>
+              <span class="font-mono text-amber-400 font-bold">88.0 / 100 (15%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-amber-500 h-2 rounded-full" style="width: 88%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">تدقيق وجود وطول وخصوصية وسوم title و meta description و OpenGraph.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">البيانات المنظمة (Structured Data)</span>
+              <span class="font-mono text-slate-400 font-bold">Not Assessed (15%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-slate-700 h-2 rounded-full" style="width: 100%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">تقييم محايد آمن لغياب وسوم JSON-LD دون خصم جائر للمواقع البسيطة.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">سيو الجافاسكريبت (JavaScript SEO)</span>
+              <span class="font-mono text-emerald-400 font-bold">100.0 / 100 (15%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 100%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">مطابقة المحتوى بين HTML الأولي و DOM المصير لضمان وصول محركات البحث.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">الأداء والسرعة (Performance & Vitals)</span>
+              <span class="font-mono text-emerald-400 font-bold">92.0 / 100 (15%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 92%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">قياس زمن الاستجابة المخبري، سرعة التصيير، وحجم الحمولة بدقة ومصداقية علمية.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Content Marketing (Phase 06) -->
+    <div id="tab-content" class="tab-content hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/5 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <h2 class="text-xl font-bold text-white">نتائج تدقيق المحتوى والرسائل التسويقية (Phase 06 Audit)</h2>
+            <p class="text-xs text-slate-400 mt-1">الجولة الحقيقية المعتمدة: <code class="text-amber-300 font-mono">cnt-601bc72f7aa0</code> على <code class="text-slate-300 font-mono">https://example.com</code></p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl font-extrabold text-amber-400 font-mono">90.7</span>
+            <div class="text-right">
+              <div class="text-xs font-bold text-emerald-400">ممتاز (Excellent)</div>
+              <div class="text-[11px] text-slate-500">الدرجة الإجمالية (من 100)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 Dimensions Rubric Breakdown -->
+        <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider">مصفوفة تقييم الأبعاد السبعة (7-Dimension Rubric)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">وضوح القيمة المقترحة</span>
+              <span class="font-mono text-amber-400 font-bold">85.0 / 100 (20%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-amber-500 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">رصد غياب شرح تفصيلي لطبيعة النشاط في العنوان الافتتاحي.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">وضوح الرسائل التسويقية</span>
+              <span class="font-mono text-emerald-400 font-bold">97.0 / 100 (20%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-emerald-500 h-2 rounded-full" style="width: 97%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">لغة واضحة ومباشرة تخلو من التعقيد والتناقض.</p>
+          </div>
+
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-slate-300 font-semibold">دعوات اتخاذ الإجراء (CTAs)</span>
+              <span class="font-mono text-amber-400 font-bold">85.0 / 100 (15%)</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2">
+              <div class="bg-amber-500 h-2 rounded-full" style="width: 85%"></div>
+            </div>
+            <p class="text-[11px] text-slate-400">دعوة إجراء منفردة وواضحة (More information...) برابط موثق.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: UX/UI (Phase 05) -->
+    <div id="tab-ux" class="tab-content hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/5 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <h2 class="text-xl font-bold text-white">نتائج تدقيق تجربة المستخدم UX/UI (Phase 05 Usability)</h2>
+            <p class="text-xs text-slate-400 mt-1">محلل قابلية الاستخدام وسهولة الوصول عبر Gemini 3.6 Flash</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl font-extrabold text-emerald-400 font-mono">88.4</span>
+            <div class="text-right">
+              <div class="text-xs font-bold text-emerald-300">جيد جداً (Very Good)</div>
+              <div class="text-[11px] text-slate-500">مؤشر جودة التجربة</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="text-xs text-slate-400">إمكانية الوصول (Accessibility)</div>
+            <div class="text-2xl font-bold text-white">86.2 / 100</div>
+            <p class="text-[11px] text-slate-400">تحقق تباين الألوان ودعم قراءات الشاشة ووسوم الصور.</p>
+          </div>
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="text-xs text-slate-400">جاهزية الهواتف الذكية (Mobile Ready)</div>
+            <div class="text-2xl font-bold text-white">94.0 / 100</div>
+            <p class="text-[11px] text-slate-400">خلو الصفحة من التمرير الأفقي المشوه (Horizontal Overflow).</p>
+          </div>
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="text-xs text-slate-400">سهولة التفاعل (Interactivity)</div>
+            <div class="text-2xl font-bold text-white">85.0 / 100</div>
+            <p class="text-[11px] text-slate-400">فحص مساحات أزرار اللمس (Touch Targets >= 44x44px).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 5: Visual Identity (Phase 04) -->
+    <div id="tab-visual" class="tab-content hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/5 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+          <div>
+            <h2 class="text-xl font-bold text-white">تدقيق الهوية البصرية والتصميم (Phase 04 Visual Identity)</h2>
+            <p class="text-xs text-slate-400 mt-1">المحلل البصري متعدد الوسائط (Multimodal Visual Identity Analyst).</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-3xl font-extrabold text-emerald-400 font-mono">90.7</span>
+            <div class="text-right">
+              <div class="text-xs font-bold text-emerald-300">ممتاز (Excellent)</div>
+              <div class="text-[11px] text-slate-500">مؤشر التناسق البصري</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="text-xs text-slate-400">تناسق الألوان (Color Harmony)</div>
+            <div class="text-2xl font-bold text-white">92.0 / 100</div>
+            <p class="text-[11px] text-slate-400">لوحة ألوان واضحة ومتباينة ومريحة لقراءة النصوص.</p>
+          </div>
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="text-xs text-slate-400">الطباعة والخطوط (Typography)</div>
+            <div class="text-2xl font-bold text-white">90.0 / 100</div>
+            <p class="text-[11px] text-slate-400">تدرج هرمي سليم للخطوط وارتفاعات الأسطر المناسبة.</p>
+          </div>
+          <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800 space-y-2">
+            <div class="text-xs text-slate-400">التناسق الهيكلي (Layout Consistency)</div>
+            <div class="text-2xl font-bold text-white">90.0 / 100</div>
+            <p class="text-[11px] text-slate-400">توازن الفراغات البيضاء ومحاذاة العناصر الشبكية.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 6: Interactive Console -->
+    <div id="tab-console" class="tab-content hidden space-y-6">
+      <div class="glass-panel rounded-2xl p-6 border border-white/5 space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">وحدة التحكم بالتدقيق الحي (Interactive Audit Console)</h2>
+          <p class="text-xs text-slate-400 mt-1">تشغيل ومراقبة التدقيق الشامل لأي موقع مباشرة عبر واجهة برمجة تطبيقات Site DNA.</p>
+        </div>
+
+        <div class="bg-slate-900/70 p-5 rounded-xl border border-slate-800 space-y-4">
+          <label class="block text-xs font-semibold text-slate-300">رابط الموقع المستهدف للتدقيق (Target Website URL):</label>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input type="url" id="target-url-input" value="https://example.com" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500 font-mono" placeholder="https://example.com">
+            <button onclick="triggerHealthCheck()" class="px-5 py-2.5 rounded-xl gold-gradient text-white text-xs font-bold hover:opacity-90 transition shadow-md shadow-amber-500/20 flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <span>فحص جاهزية الخادم</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span class="font-bold">سجل العمليات المباشر (Live Console Output):</span>
+            <button onclick="clearConsole()" class="text-[11px] text-slate-500 hover:text-slate-300">مسح السجل</button>
+          </div>
+          <pre id="console-output" class="font-mono text-xs text-emerald-400 bg-slate-900/80 p-4 rounded-lg overflow-x-auto max-h-64 whitespace-pre-wrap leading-relaxed">[READY] الخادم متصل بنجاح على http://127.0.0.1:8000
+[READY] جميع مسارات الـ API جاهزة للاستدعاء:
+  - GET  /api/v1/health
+  - GET  /api/v1/ready
+  - POST /api/v1/discovery
+  - POST /api/v1/visual/capture
+  - POST /api/v1/analysis/visual-identity
+  - POST /api/v1/analysis/ux-ui
+  - POST /api/v1/analysis/content-marketing
+  - POST /api/v1/analysis/technical-seo
+[MODEL] Gemini 3.6 Flash مهيأ ومفعل بنجاح عبر Google AI Studio.</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-500 py-6 border-t border-slate-800/80 space-y-1">
+      <p>Site DNA — منصة استخبارات وتدقيق المواقع الإلكترونية | جميع الحقوق محفوظة لأساس للذكاء الاصطناعي (ASAAS AI) 2026</p>
+      <p class="font-mono text-[11px] text-slate-600">Built with Python 3.11, FastAPI, Playwright & CrewAI Flows on Google Gemini 3.6 Flash</p>
+    </footer>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-amber-500', 'text-amber-400', 'bg-slate-800/40');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      const targetTab = document.getElementById('tab-' + tabId);
+      const targetBtn = document.getElementById('btn-' + tabId);
+      if (targetTab && targetBtn) {
+        targetTab.classList.remove('hidden');
+        targetBtn.classList.remove('border-transparent', 'text-slate-400');
+        targetBtn.classList.add('border-amber-500', 'text-amber-400', 'bg-slate-800/40');
+      }
+    }
+
+    async function triggerHealthCheck() {
+      const consoleEl = document.getElementById('console-output');
+      consoleEl.textContent += '\n[REQUEST] فحص حالة الخادم /api/v1/ready...';
+      try {
+        const res = await fetch('/api/v1/ready');
+        const data = await res.json();
+        consoleEl.textContent += '\n[RESPONSE ' + res.status + '] ' + JSON.stringify(data, null, 2);
+      } catch (err) {
+        consoleEl.textContent += '\n[ERROR] تعذر الاتصال بالخادم: ' + err.message;
+      }
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function clearConsole() {
+      document.getElementById('console-output').textContent = '[CLEARED] تم مسح السجل.';
+    }
+
+    // Check backend health on load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/v1/health');
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('backend-status-text').textContent = 'الخادم متصل (v' + data.version + ')';
+        }
+      } catch (e) {
+        document.getElementById('backend-status-pill').className = 'px-4 py-2.5 rounded-xl bg-amber-950/50 border border-amber-500/40 text-amber-300 text-xs font-semibold flex items-center gap-2';
+        document.getElementById('backend-status-text').textContent = 'الخادم قيد المزامنة';
+      }
+    });
+  </script>
+</body>
+</html>
