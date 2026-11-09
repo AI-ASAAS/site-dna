@@ -173,7 +173,7 @@ export function AgentsDirectory() {
                 </div>
 
                 <div className="pt-3 border-t border-[var(--hairline)] flex items-center justify-between text-xs text-[var(--text-3)]">
-                  <span className="font-mono text-[11px]">Model: {agent.model_name}</span>
+                  <span className="font-semibold text-[11px] text-emerald-700 dark:text-emerald-400">جاهز للتشغيل والتحليل</span>
                   <span className="font-semibold text-[var(--accent)] hover:underline text-[11px]">
                     التفاصيل والمخرجات ←
                   </span>
@@ -215,8 +215,8 @@ export function AgentsDirectory() {
 
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="p-3 rounded-2xl bg-[var(--glass-tint)] border border-[var(--hairline)]">
-                  <span className="text-[var(--text-3)] block mb-1">النموذج المعتمد:</span>
-                  <span className="font-mono font-bold text-[var(--text)]">{selectedAgent.model_name}</span>
+                  <span className="text-[var(--text-3)] block mb-1">فئة المعالجة:</span>
+                  <span className="font-bold text-[var(--text)]">ذكاء اصطناعي متعدد الوسائط</span>
                 </div>
                 <div className="p-3 rounded-2xl bg-[var(--glass-tint)] border border-[var(--hairline)]">
                   <span className="text-[var(--text-3)] block mb-1">حالة الجاهزية:</span>

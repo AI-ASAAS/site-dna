@@ -147,7 +147,7 @@ export function AccessibilityView({ runId }: AccessibilityViewProps) {
               {lang === 'ar' ? 'مؤشر النفاذ الرقمي وتجربة المستخدم الشاملة' : 'Web Accessibility & Inclusive Experience Posture'}
             </h1>
             <p className="text-xs text-[var(--text-3)] font-mono">
-              {lang === 'ar' ? 'النموذج المعتمد:' : 'Model:'} {report.model_name} • {report.target_url}
+              {report.target_url}
             </p>
           </div>
 

@@ -127,11 +127,8 @@ export function SecurityPrivacyView({ runId }: SecurityViewProps) {
             <h2 className="text-2xl font-extrabold text-[var(--text)]">
               {lang === 'ar' ? 'مؤشر الوضع الأمني والدفاعي للموقع' : 'Defensive Website Security Posture'}
             </h2>
-            <p className="text-xs text-[var(--text-2)] max-w-2xl leading-relaxed">
-              {report.target_url} • {lang === 'ar' ? 'النموذج المعتمد:' : 'Model:'}{' '}
-              <span className="font-mono text-stone-900 dark:text-stone-100 font-bold">
-                {report.model_name || 'gemini-3.6-flash'}
-              </span>
+            <p className="text-xs text-[var(--text-2)] max-w-2xl leading-relaxed font-mono">
+              {report.target_url}
             </p>
           </div>
 

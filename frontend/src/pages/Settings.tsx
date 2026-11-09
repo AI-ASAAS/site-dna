@@ -62,8 +62,8 @@ export function Settings() {
           <div className="p-4 rounded-2xl bg-[var(--bg)] border border-[var(--hairline)] text-xs space-y-1">
             <div className="flex items-center justify-between">
               <span className="font-semibold text-[var(--text)]">{t('settings.quota_status')}:</span>
-              <span className="font-mono text-[11px] text-amber-700 dark:text-amber-400 font-bold">
-                Google Free Tier Daily Cap
+              <span className="font-mono text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">
+                Active & Operational
               </span>
             </div>
             <p className="text-[11px] text-[var(--text-3)] leading-relaxed">

@@ -31,22 +31,6 @@ export function Layout() {
 
   return (
     <div className="min-h-screen w-full flex flex-col relative">
-      {/* Top Banner: Official Model & Phase 12 Release Candidate Status */}
-      <div className="bg-stone-900 text-stone-100 dark:bg-stone-950 dark:text-stone-100 border-b border-stone-800 px-4 py-1.5 text-xs font-semibold flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-bold tracking-wide">{t('org.name')} — {t('app.brand')} v1.0.0-rc.1 (Phase 12 Release Candidate)</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="font-mono font-bold text-[11px] px-2.5 py-0.5 rounded-full bg-stone-800 text-amber-300 border border-stone-700 shadow-xs">
-            Model: gemini-3.6-flash
-          </span>
-          <span className="hidden sm:inline-flex items-center gap-1 text-[11px] text-emerald-400 font-bold">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> API Connected • 12/12 Agents Ready
-          </span>
-        </div>
-      </div>
-
       {/* Main Glass Navigation Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-[var(--glass-tint-strong)] border-b border-[var(--hairline)] transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -162,8 +146,6 @@ export function Layout() {
             {t('app.brand')} — {t('org.name')} © 2026. All rights reserved.
           </div>
           <div className="flex items-center gap-4 text-[var(--text-2)]">
-            <span className="font-mono">Gemini 3.6 Flash</span>
-            <span>•</span>
             <span>Phases 01–12 Validated</span>
             <span>•</span>
             <span className="text-[var(--accent)] font-semibold">Site DNA v1.0.0-rc.1 • Enterprise Release Ready</span>
