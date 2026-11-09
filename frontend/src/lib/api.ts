@@ -88,6 +88,7 @@ export interface RunSubmissionRequest {
   url: string;
   stages: string[];
   max_pages?: number;
+  full_site_scan?: boolean;
   offline_mode?: boolean;
   deterministic_only?: boolean;
   competitor_urls?: string[];

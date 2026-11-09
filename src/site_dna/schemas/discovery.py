@@ -14,7 +14,7 @@ class CrawlRequest(BaseModel):
     """Input payload for a website discovery crawl request."""
 
     url: str = Field(description="Target website URL to discover and crawl")
-    max_pages: Optional[int] = Field(default=None, ge=1, le=50, description="Override maximum pages to crawl")
+    max_pages: Optional[int] = Field(default=None, ge=1, le=100, description="Override maximum pages to crawl")
     max_depth: Optional[int] = Field(default=None, ge=0, le=5, description="Override maximum crawl depth")
 
 

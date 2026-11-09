@@ -44,7 +44,8 @@ class RunSubmissionRequest(BaseModel):
         ],
         description="List of selected stage IDs to execute",
     )
-    max_pages: int = Field(default=5, ge=1, le=20, description="Maximum crawl depth/pages")
+    max_pages: int = Field(default=5, ge=1, le=100, description="Maximum crawl depth/pages")
+    full_site_scan: bool = Field(default=False, description="Full comprehensive website crawl and audit")
     offline_mode: bool = Field(default=False, description="Run in offline mode without external AI requests")
     deterministic_only: bool = Field(
         default=False, description="Skip AI interpretation and produce deterministic output"

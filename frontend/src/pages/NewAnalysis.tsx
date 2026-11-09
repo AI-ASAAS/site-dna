@@ -23,6 +23,8 @@ import {
   HelpCircle,
   Play,
   Cpu,
+  CheckCircle2,
+  FileText,
 } from 'lucide-react';
 
 interface StageOption {
@@ -205,6 +207,7 @@ export function NewAnalysis() {
     'accessibility',
   ]);
   const [maxPages, setMaxPages] = useState(5);
+  const [isFullScan, setIsFullScan] = useState(false);
   const [deterministicOnly, setDeterministicOnly] = useState(false);
   const [offlineMode, setOfflineMode] = useState(false);
 
@@ -248,7 +251,8 @@ export function NewAnalysis() {
       const payload: RunSubmissionRequest = {
         url: cleanUrl,
         stages: selectedStages,
-        max_pages: maxPages,
+        max_pages: isFullScan ? 50 : maxPages,
+        full_site_scan: isFullScan,
         deterministic_only: deterministicOnly,
         offline_mode: offlineMode,
         competitor_urls: [], // Autonomous agent discovery will find Top 3 closest competitors
@@ -424,22 +428,87 @@ export function NewAnalysis() {
         </div>
 
         {/* Advanced Options */}
-        <div className="p-6 rounded-3xl border border-[var(--hairline)] bg-[var(--glass-tint)] backdrop-blur-md space-y-4">
-          <h3 className="font-bold text-sm text-[var(--text)]">خيارات التحليل المتقدمة</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-[var(--text-2)] mb-1.5">
-                {t('new.max_pages_label')}
-              </label>
-              <input
-                type="number"
-                min={1}
-                max={20}
-                value={maxPages}
-                onChange={(e) => setMaxPages(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl border border-[var(--hairline)] bg-[var(--bg)] text-[var(--text)] text-sm font-mono"
-              />
+        <div className="p-6 rounded-3xl border border-[var(--hairline)] bg-[var(--glass-tint)] backdrop-blur-md space-y-5">
+          <h3 className="font-bold text-sm text-[var(--text)]">خيارات التحليل المتقدمة ونطاق الفحص</h3>
+
+          {/* Scope Selector: Custom pages limit vs Full & Comprehensive Site Scan */}
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-[var(--text)]">
+              {t('new.scope_label')}
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setIsFullScan(false)}
+                className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer ${
+                  !isFullScan
+                    ? 'border-stone-800/40 bg-stone-900/5 dark:border-stone-200/40 dark:bg-stone-100/10 shadow-xs ring-1 ring-stone-800/20'
+                    : 'border-[var(--hairline)] bg-[var(--bg)] opacity-70 hover:opacity-100'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-bold text-xs text-[var(--text)] flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-stone-700 dark:text-stone-300" />
+                    {t('new.scope_limited')}
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-stone-900/10 text-stone-900 dark:bg-stone-100/10 dark:text-stone-100 font-bold">
+                    محدد
+                  </span>
+                </div>
+                <p className="text-[11px] text-[var(--text-3)] leading-relaxed">
+                  فحص سريع ومخصص بعدد صفحات محدد لتسريع وقت التحليل وإنجاز التقرير في ثوانٍ.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsFullScan(true)}
+                className={`p-3.5 rounded-2xl border text-start transition-all cursor-pointer ${
+                  isFullScan
+                    ? 'border-emerald-600/40 bg-emerald-600/5 dark:border-emerald-400/40 dark:bg-emerald-400/10 shadow-xs ring-1 ring-emerald-600/20'
+                    : 'border-[var(--hairline)] bg-[var(--bg)] opacity-70 hover:opacity-100'
+                }`}
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-bold text-xs text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-emerald-600" />
+                    {t('new.scope_full')}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-xs">
+                    كامل الموقع 🌐
+                  </span>
+                </div>
+                <p className="text-[11px] text-[var(--text-3)] leading-relaxed">
+                  فحص شامل وزحف معمق لكافة صفحات ومسارات الموقع المكتشفة في الخريطة والروابط الداخلية.
+                </p>
+              </button>
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            {!isFullScan ? (
+              <div>
+                <label className="block text-xs font-semibold text-[var(--text-2)] mb-1.5">
+                  {t('new.max_pages_label')}
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={50}
+                  value={maxPages}
+                  onChange={(e) => setMaxPages(Number(e.target.value))}
+                  className="w-full px-3 py-2 rounded-xl border border-[var(--hairline)] bg-[var(--bg)] text-[var(--text)] text-sm font-mono"
+                />
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-900 dark:text-emerald-200 text-xs flex items-center gap-2.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="leading-relaxed">
+                  <strong>وضع الفحص الشامل مفعل:</strong> ستقوم المنظومة باكتشاف وزحف كافة مسارات وصفحات الموقع المتاحة تلقائياً دون تقييد بعدد صفحات.
+                </span>
+              </div>
+            )}
+
             <div className="space-y-2 pt-1">
               <label className="flex items-center gap-2.5 text-xs text-[var(--text-2)] cursor-pointer">
                 <input

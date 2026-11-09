@@ -1012,7 +1012,8 @@ class AnalysisCoordinator:
         t0 = datetime.now(timezone.utc)
         try:
             service = WebsiteDiscoveryService(settings=self.settings)
-            crawl_req = CrawlRequest(url=record.url, max_pages=request.max_pages)
+            effective_max = 50 if getattr(request, "full_site_scan", False) else (request.max_pages or 5)
+            crawl_req = CrawlRequest(url=record.url, max_pages=effective_max)
             result = await service.discover(crawl_req)
             old_run_id = result.run_id
             result.run_id = record.run_id  # Align discovery run_id with coordinator run_id
