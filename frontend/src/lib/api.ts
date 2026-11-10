@@ -152,6 +152,7 @@ export const api = {
       body: JSON.stringify(data),
     }),
   getRun: (runId: string) => request<RunRecord>(`/runs/${encodeURIComponent(runId)}`),
+  getAIAutomation: (runId: string) => request<any>(`/runs/${encodeURIComponent(runId)}/ai-automation`),
   getScreenshots: (runId: string) => request<any[]>(`/runs/${encodeURIComponent(runId)}/screenshots`),
   getFindings: (runId: string, agent?: string) => {
     const qs = agent ? `?agent=${encodeURIComponent(agent)}` : '';

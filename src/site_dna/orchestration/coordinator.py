@@ -1633,6 +1633,14 @@ class AnalysisCoordinator:
                 "strategic_intelligence",
                 {"score": score_val, "findings": len(report.unified_findings), "actions": len(report.actions)},
             )
+
+            # Synthesize dedicated AI & Automation Readiness analysis
+            try:
+                from site_dna.analysis.ai_automation.analyzer import AIAutomationAnalyzer
+                ai_analyzer = AIAutomationAnalyzer(base_dir=self.base_dir)
+                ai_analyzer.analyze_run(record.run_id)
+            except Exception as ai_exc:
+                logger.warning("AI & Automation analysis failed: %s", ai_exc)
         except Exception as exc:
             t1 = datetime.now(timezone.utc)
             stage.status = "failed"
