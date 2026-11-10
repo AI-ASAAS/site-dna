@@ -64,4 +64,6 @@ class PageData(BaseModel):
     links: list[LinkItem] = Field(default_factory=list)
     images: list[ImageItem] = Field(default_factory=list)
     html_sha256: str | None = None
+    raw_html: str | None = Field(default=None, exclude=True)
+    non_http_link_counts: dict[str, int] = Field(default_factory=dict, exclude=True)
     error: str | None = None

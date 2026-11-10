@@ -27,3 +27,16 @@ This file records every assumption made while implementing the Website Intellige
 - **Canonicalization.** Fragments are dropped, tracking parameters (`utm_*`, `gclid`, `fbclid`, and similar) are removed, query parameters are sorted, default ports are removed, and trailing slashes are normalized except for the root path.
 - **Crawler output.** `DiscoveredUrl` records `url`, `depth`, `discovered_from`, heuristic `category`, and a status of `fetched`, `skipped_robots`, `skipped_scope`, `skipped_limit`, or `failed`.
 
+## Phase 3 — Content Extractor
+
+- **Package location.** The spec's `analyzers/` package is created as `src/site_dna/analyzers/`. The pre-existing `site_dna.analysis` package is left untouched for the older platform.
+- **Crawl-to-extractor contract.** `CrawlManager` stays discovery-only and returns `DiscoveredUrl` records. `ContentExtractor` receives those records and renders each fetched URL through Crawl4AI, matching the Phase 3 wording "for each crawled URL, obtain rendered HTML and Markdown from Crawl4AI". This avoids retaining page bodies in the Phase 2 crawl result while still preventing an extra discovery pass.
+- **Crawl4AI version and browser.** `crawl4ai==0.9.5` is used with Playwright Chromium. Its default strategy is `AsyncPlaywrightCrawlerStrategy`; the optional Patchright browser is not required. Playwright Chromium is installed locally.
+- **selectolax backend.** `selectolax==1.0.2` deprecates the Modest backend, so parsing uses `selectolax.lexbor.LexborHTMLParser`.
+- **Noise removal.** Excluded tags and selector blocklists live in `analyzers/noise.py` as constants. They are passed to Crawl4AI and also applied locally before counting headings, links, and images so extraction is deterministic. The approach is documented as heuristic.
+- **Raw HTML retention.** `PageData.raw_html` is an internal field with `exclude=True`; it is available to later analyzers (SEO) without appearing in `report.json`.
+- **Non-HTTP links.** `javascript:`, `mailto:`, `tel:`, and `data:` links are dropped from `PageData.links` and counted in the internal, non-serialized `non_http_link_counts` field.
+- **Markdown storage.** Markdown longer than `inline_markdown_limit` (default 100,000 chars) is written to `storage/{scan_id}/pages/{n}.md`; `PageData.markdown` is `None` and `PageData.markdown_file` points to the file.
+- **Fit Markdown fallback.** When Crawl4AI's fit Markdown is empty but raw Markdown is not, the extractor records raw/fit character counts in module warnings and uses the raw Markdown.
+- **Dependency lock.** `uv.lock` was regenerated after adding `tldextract`, `crawl4ai`, and `selectolax`.
+
