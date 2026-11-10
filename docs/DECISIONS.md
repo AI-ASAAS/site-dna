@@ -13,3 +13,17 @@ This file records every assumption made while implementing the Website Intellige
 - **Lazy Gemini import.** The CLI imports the Gemini diagnostics service only inside `run_smoke`, so `scan` and its tests do not require the Google SDK.
 - **Lint baseline.** Pre-existing `ruff` findings in unrelated modules were fixed mechanically (unused imports, import order, f-strings, one whitespace line, and dead assignments) so `ruff check .` passes for the phase.
 - **Null/array policy.** The report models encode the shared rule: unknown values default to `None`, and every list field defaults to an empty list.
+
+## Phase 2 — URL Validator and Crawler
+
+- **Module mapping.** The spec names `services/security.py`, `services/http_client.py`, and `crawler/{robots,crawl_manager,categorizer}.py`. These are implemented as new modules inside the existing `site_dna` package. The pre-existing `site_dna.discovery.*` crawler is left untouched so its tests and API remain stable; the Phase 2 modules are additive.
+- **Crawl4AI fallback.** Crawl4AI is not a dependency of this repository. The spec explicitly allows implementing our own BFS loop when Crawl4AI cannot enforce the required limits and per-URL validation, so `crawler/crawl_manager.py` is a deterministic BFS loop over `SafeHttpClient`.
+- **Registrable domain.** `tldextract` is used with `suffix_list_urls=()` so no network fetch is needed at runtime; it falls back to the exact host when a suffix is unknown (for example reserved `.test` hosts).
+- **robots.txt status.** A 2xx response is `found`; a 4xx response is `missing` and allows all; a 5xx or network failure is `error`, which also allows all but records a warning. This matches the Phase 2 spec rather than the older `discovery.robots_policy` fail-closed behavior.
+- **Redirects and DNS rebinding.** `SafeHttpClient` re-validates every redirect hop with `validate_url`. The client does not pin the validated IP in this phase, so a DNS-rebinding race between validation and connection remains possible; this is the documented residual risk allowed by the spec. The existing `discovery.http_client` still provides connect-time IP pinning for the older crawler.
+- **Retry policy.** `tenacity` retries timeouts and 5xx responses twice with exponential backoff. 4xx responses are returned without retry.
+- **Rate limiting.** Per-host token buckets are keyed by hostname; `per_host_rps` defaults to the `scan_per_host_rps` setting when the manager is wired into a scan.
+- **Private hosts.** `validate_url` honors `ALLOW_PRIVATE_HOSTS` only through `Settings.private_hosts_allowed()`, which additionally requires `APP_ENV=test`.
+- **Canonicalization.** Fragments are dropped, tracking parameters (`utm_*`, `gclid`, `fbclid`, and similar) are removed, query parameters are sorted, default ports are removed, and trailing slashes are normalized except for the root path.
+- **Crawler output.** `DiscoveredUrl` records `url`, `depth`, `discovered_from`, heuristic `category`, and a status of `fetched`, `skipped_robots`, `skipped_scope`, `skipped_limit`, or `failed`.
+
