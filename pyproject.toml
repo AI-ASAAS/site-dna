@@ -41,6 +41,8 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [
     "integration: marks tests requiring live external services/credentials (deselect with '-m \"not integration\"')",
+    "live: marks tests that hit the real internet (skipped by default)",
+    "browser: marks tests that require a Playwright Chromium browser",
 ]
 
 [tool.ruff]

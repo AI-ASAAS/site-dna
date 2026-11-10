@@ -24,6 +24,7 @@ dist/
 build/
 *.egg-info/
 runs/
+storage/
 
 # IDE & Editor
 .vscode/

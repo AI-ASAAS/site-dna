@@ -167,6 +167,40 @@ uv run python -m site_dna.cli analyze-visual --manifest-file "runs/.../manifest.
 uv run python -m site_dna.cli analyze-visual --visual-run-id "vis-e6b6128de9b5" --offline
 ```
 
+### Website Intelligence MVP Scan (Phases 1-9)
+
+The `scan` command produces a single schema-valid JSON report for one URL. Phase 1 writes a placeholder report with every module marked `skipped`; later phases fill in content, visual identity, PageSpeed, and SEO data.
+
+Environment setup:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e .
+python -m pip install pytest pytest-asyncio ruff
+
+# Required from Phase 3 onward (browser rendering)
+playwright install chromium
+```
+
+Usage:
+
+```powershell
+# The permission flag is mandatory. Without it the CLI exits with code 2 and makes no network call.
+uv run python -m site_dna.cli scan "https://example.com" --i-have-permission
+
+# Optional limits and output location
+uv run python -m site_dna.cli scan "https://example.com" --i-have-permission `
+  --max-pages 10 --max-depth 2 --output-dir storage --verbose
+```
+
+Outputs:
+
+- `storage/{scan_id}/report.json` — the schema-valid report
+- `storage/{scan_id}/scan.log` — JSON-lines log with secrets redacted
+
+Relevant environment variables: `PSI_API_KEY` (optional), `STORAGE_DIR`, `ALLOW_PRIVATE_HOSTS` (only honored when `APP_ENV=test`), and the `SCAN_*` defaults listed in `.env.example`.
+
 ---
 
 ## 6. Automated Testing & Code Quality

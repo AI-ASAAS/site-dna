@@ -6,14 +6,17 @@ Provides environment verification (doctor) and safe model diagnostics (smoke).
 import argparse
 import re
 import sys
+from datetime import datetime, timezone
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Optional
+from uuid import uuid4
 
 from site_dna import __version__
-from site_dna.core.config import get_settings
-from site_dna.core.logging import setup_logging
-from site_dna.services.gemini_diagnostics import test_direct_gemini_connection
+from site_dna.core.config import ScanConfig, get_settings
+from site_dna.core.context import ScanContext
+from site_dna.core.logging import get_logger, setup_logging, setup_scan_logging
+from site_dna.scan import build_placeholder_report, write_report
 
 
 def run_doctor() -> int:
@@ -126,6 +129,8 @@ def run_smoke(direct: bool, crew: bool, flow: bool, live: bool) -> int:
 
     # Route 1: Direct SDK Test
     if direct:
+        from site_dna.services.gemini_diagnostics import test_direct_gemini_connection
+
         print(f"Executing Direct Gemini Connection Test ({settings.gemini_model})...")
         result = test_direct_gemini_connection(settings=settings)
         print(f"Outcome  : {result.status.value}")
@@ -1080,6 +1085,7 @@ def run_analyze_strategy(
 ) -> int:
     """Execute AI Strategic Intelligence & Action Roadmap synthesis (Phase 11)."""
     import asyncio
+
     from site_dna.analysis.strategic_intelligence.service import StrategicIntelligenceService
     from site_dna.schemas.strategic_intelligence import StrategicAnalysisRequest
 
@@ -1149,6 +1155,7 @@ def run_export_report(
     """Execute Phase 12 Enterprise Report Export & Quality Verification."""
     import asyncio
     import shutil
+
     from site_dna.reporting.export_service import FinalReportExportService
     from site_dna.schemas.final_report import FinalReportRequest
 
@@ -1225,6 +1232,75 @@ def run_export_report(
     return 0
 
 
+def run_scan_cli(
+    url: str,
+    i_have_permission: bool,
+    max_pages: Optional[int] = None,
+    max_depth: Optional[int] = None,
+    output_dir: Optional[str] = None,
+    embed_images: bool = False,
+    verbose: bool = False,
+) -> int:
+    """Run a Phase 1 scan placeholder; requires explicit permission attestation."""
+    if not i_have_permission:
+        print(
+            "error: --i-have-permission is required before scanning a website",
+            file=sys.stderr,
+        )
+        return 2
+
+    settings = get_settings()
+    config = ScanConfig.from_settings(
+        settings,
+        input_url=url,
+        max_pages=max_pages,
+        max_depth=max_depth,
+        output_dir=output_dir,
+        embed_images=embed_images,
+        verbose=verbose,
+        permission_attested=True,
+    )
+    scan_id = uuid4().hex
+    storage_root = Path(output_dir) if output_dir else Path(settings.storage_dir)
+    setup_scan_logging(
+        scan_id,
+        storage_root,
+        level="DEBUG" if verbose else settings.log_level,
+    )
+
+    logger = get_logger("site_dna.scan")
+    context = ScanContext(
+        config=config,
+        settings=settings,
+        scan_id=scan_id,
+        output_dir=storage_root / scan_id,
+        logger=logger,
+        started_at=datetime.now(timezone.utc),
+    )
+
+    report = build_placeholder_report(
+        scan_id=scan_id,
+        input_url=url,
+        config=config.model_dump(),
+        tool_version=__version__,
+    )
+    report.project_info.processing_time_seconds = round(
+        (datetime.now(timezone.utc) - context.started_at).total_seconds(), 2
+    )
+    report_path = write_report(report, context.output_dir)
+
+    logger.info("scan placeholder written to %s", report_path)
+    print("=" * 60)
+    print(" Site DNA - Website Intelligence Scan (Phase 01 placeholder)")
+    print("=" * 60)
+    print(f" Scan status : {report.project_info.scan_status}")
+    print(f" Scan ID     : {scan_id}")
+    print(f" Target URL  : {url}")
+    print(f" Report      : {report_path}")
+    print("=" * 60)
+    return 0
+
+
 def main() -> None:
     """Main CLI entrypoint."""
     if hasattr(sys.stdout, "reconfigure"):
@@ -1239,6 +1315,24 @@ def main() -> None:
         description="Site DNA CLI: Environment verification, diagnostics, and crawling.",
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Command: scan (Website Intelligence MVP, Phase 01 placeholder)
+    scan_parser = subparsers.add_parser(
+        "scan", help="Run a website intelligence scan (Phase 01 placeholder)"
+    )
+    scan_parser.add_argument("url", help="Target website URL")
+    scan_parser.add_argument(
+        "--i-have-permission",
+        action="store_true",
+        help="Attest that you have permission to scan the target website",
+    )
+    scan_parser.add_argument("--max-pages", type=int, default=None, help="Maximum pages to scan")
+    scan_parser.add_argument("--max-depth", type=int, default=None, help="Maximum crawl depth")
+    scan_parser.add_argument("--output-dir", default=None, help="Directory for scan artifacts")
+    scan_parser.add_argument(
+        "--embed-images", action="store_true", help="Embed screenshots as base64 in the report"
+    )
+    scan_parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
 
     # Command: doctor
     subparsers.add_parser("doctor", help="Verify environment, dependencies, and configuration")
@@ -1407,7 +1501,19 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.command == "doctor":
+    if args.command == "scan":
+        sys.exit(
+            run_scan_cli(
+                url=args.url,
+                i_have_permission=args.i_have_permission,
+                max_pages=args.max_pages,
+                max_depth=args.max_depth,
+                output_dir=args.output_dir,
+                embed_images=args.embed_images,
+                verbose=args.verbose,
+            )
+        )
+    elif args.command == "doctor":
         sys.exit(run_doctor())
     elif args.command == "smoke":
         sys.exit(run_smoke(direct=args.direct, crew=args.crew, flow=args.flow, live=args.live))
