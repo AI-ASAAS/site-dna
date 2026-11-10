@@ -40,3 +40,15 @@ This file records every assumption made while implementing the Website Intellige
 - **Fit Markdown fallback.** When Crawl4AI's fit Markdown is empty but raw Markdown is not, the extractor records raw/fit character counts in module warnings and uses the raw Markdown.
 - **Dependency lock.** `uv.lock` was regenerated after adding `tldextract`, `crawl4ai`, and `selectolax`.
 
+## Phase 4 — Visual Identity Extractor
+
+- **Browser manager reuse.** The spec's `services/browser.py` is added as the new shared entry point. Its `BrowserManager` subclasses the existing `site_dna.visual.browser_manager.BrowserManager` so Playwright lifecycle, context profiles, and shutdown logic are not duplicated. Phase 5 will reuse the same service.
+- **Request guard.** `BrowserRequestGuard` validates every browser request with `validate_url`, not a parallel DNS check. It caches one decision per `(scheme, host, port)`, allows `data:`, `blob:`, and `about:` without network validation, blocks WebSocket/EventSource resource types, counts blocked requests, and appends bounded warnings. It is attached through the existing context-level `route("**/*", ...)` hook, which covers the spec's per-page route requirement.
+- **Collector.** `analyzers/js/collect_styles.js` is a self-contained function evaluated with `page.evaluate`. It samples visible elements up to 5,000, records the first opaque ancestor background as `effectiveBg`, separates button and link samples, captures the first three headings per level, reads `:root` custom properties, and lists `document.fonts` faces.
+- **Color parsing.** `analyzers/color_utils.py` parses `rgb()`, `rgba()`, hex, `hsl()`, `hsla()`, `color(srgb ...)`, and a small named-color table. Semi-transparent colors are composited over `effectiveBg`; fully transparent colors are dropped. Box-shadow colors are intentionally not sampled, which is why `#FF00FF` never enters the palette.
+- **Role heuristics.** Backgrounds are ranked by visible area, text by text length, and borders/SVG by count. Primary is the highest-weight non-neutral color observed on buttons/links, falling back to all non-neutral colors. Secondary excludes hues within 20 degrees of primary. All role records are marked `source="inferred"` and `roles_method` records the heuristic.
+- **Typography.** Font families are ranked by summed visible area. The primary family is the top entry; fallbacks are parsed from the declared font stack; `loaded` comes from `document.fonts`. Size and weight histograms and H1/H2/H3 computed styles are returned as observed evidence.
+- **Fixture.** `tests/fixtures/visual/palette.html` is served locally. It declares a `@font-face` family with a local source so tests remain offline and deterministic while still exercising the font-stack parsing and `document.fonts` path.
+- **Screenshot.** `VisualIdentity.screenshot` stays `None` in Phase 4; Phase 5 fills it in the orchestrator.
+
+
