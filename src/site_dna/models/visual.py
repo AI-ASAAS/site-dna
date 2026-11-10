@@ -98,3 +98,21 @@ class VisualIdentity(BaseModel):
     css_variables: dict[str, str] = Field(default_factory=dict)
     sampled_elements: int = 0
     truncated_sampling: bool = False
+
+
+class ScreenshotViewport(BaseModel):
+    """Viewport used for a screenshot capture."""
+
+    width: int
+    height: int
+
+
+class ScreenshotResult(BaseModel):
+    """Screenshot artifact plus capture metadata."""
+
+    file: FileRef
+    document_height: int
+    viewport: ScreenshotViewport
+    truncated: bool
+    scrolled_steps: int
+    base64: str | None = None

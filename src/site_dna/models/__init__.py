@@ -43,6 +43,8 @@ from site_dna.models.visual import (
     ColorUsage,
     FontFamilyRecord,
     HeadingStyle,
+    ScreenshotResult,
+    ScreenshotViewport,
     TypographyAnalysis,
     VisualIdentity,
 )
@@ -75,6 +77,8 @@ __all__ = [
     "Performance",
     "ProjectInfo",
     "Report",
+    "ScreenshotResult",
+    "ScreenshotViewport",
     "SeoAnalysis",
     "SeoIssue",
     "SeoSummary",

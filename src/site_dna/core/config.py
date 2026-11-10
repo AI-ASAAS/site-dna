@@ -87,6 +87,12 @@ class Settings(BaseSettings):
         le=300.0,
         description="Default browser page timeout for scans",
     )
+    scan_screenshot_max_height: int = Field(
+        default=16000,
+        ge=1000,
+        le=50000,
+        description="Maximum full-page screenshot height in pixels for scans",
+    )
     scan_psi_timeout_seconds: float = Field(
         default=90.0,
         ge=1.0,

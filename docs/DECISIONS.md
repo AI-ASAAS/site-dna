@@ -51,4 +51,16 @@ This file records every assumption made while implementing the Website Intellige
 - **Fixture.** `tests/fixtures/visual/palette.html` is served locally. It declares a `@font-face` family with a local source so tests remain offline and deterministic while still exercising the font-stack parsing and `document.fonts` path.
 - **Screenshot.** `VisualIdentity.screenshot` stays `None` in Phase 4; Phase 5 fills it in the orchestrator.
 
+## Phase 5 — Screenshot Engine
+
+- **Result shape.** `ScreenshotResult` wraps the `FileRef` and the capture metadata (`document_height`, `viewport`, `truncated`, `scrolled_steps`, optional `base64`). The orchestrator copies `result.data.file` into `VisualIdentity.screenshot`; `screenshot.py` never mutates visual identity itself.
+- **Browser reuse.** `ScreenshotEngine` uses `services/browser.py` and the same `BrowserRequestGuard` as Phase 4. It opens its own browser for now; Phase 9 will share one context between visual identity and screenshot capture.
+- **Viewport.** Capture uses the existing desktop profile (`visual_desktop_width`/`visual_desktop_height`, default 1440x900).
+- **Scrolling.** The engine scrolls in viewport-height steps with 120 ms pauses, up to 40 steps. It stops when the bottom is reached without further growth or when the measured document height reaches the configured cap. Lazy images are switched from `loading="lazy"` to `loading="eager"` before scrolling, then the engine waits briefly for `document.fonts.ready` and image completion.
+- **Height cap.** `scan_screenshot_max_height` defaults to 16,000 px. Pages taller than the cap are captured with a clip at the cap and reported as `truncated=true`; the capture never fails solely because the page is tall.
+- **PNG metadata.** Width and height are read directly from the PNG IHDR chunk, so no image decode is required. The file reference records bytes and SHA-256; the path is `{storage_dir}/{scan_id}/homepage.png`.
+- **Embedding.** `base64` is populated only when `embed_images=True`; the default report keeps file references only.
+- **Fixtures.** `tests/fixtures/site_lazy/` uses SVG images with `loading="lazy"` and a recording HTTP server verifies both were fetched. `tests/fixtures/site_tall/` is 20,000 px tall to exercise clipping.
+
+
 

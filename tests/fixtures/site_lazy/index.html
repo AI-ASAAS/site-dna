@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lazy Image Fixture</title>
+  <style>
+    body {
+      margin: 0;
+      background: #ffffff;
+      color: #222222;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      padding: 24px;
+      font-size: 32px;
+    }
+    .spacer {
+      height: 1600px;
+      background: linear-gradient(#f8fafc, #e2e8f0);
+    }
+    .lazy-image {
+      display: block;
+      width: 800px;
+      height: 300px;
+      margin: 40px auto;
+      border: 2px solid #1d3557;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lazy images below the fold</h1>
+  <div class="spacer"></div>
+  <img class="lazy-image" loading="lazy" src="lazy-red.svg" width="800" height="300" alt="Red placeholder">
+  <div class="spacer"></div>
+  <img class="lazy-image" loading="lazy" src="lazy-blue.svg" width="800" height="300" alt="Blue placeholder">
+  <div class="spacer"></div>
+</body>
+</html>
