@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from fastapi.responses import FileResponse, HTMLResponse
 
 from site_dna.core.config import Settings, get_settings
@@ -136,7 +136,7 @@ def list_report_artifacts(
     service: FinalReportingService = Depends(get_reporting_service),
 ) -> dict[str, Any]:
     """Retrieve list of generated artifacts for a report with existence and paths."""
-    meta = service.get_report_metadata(crawl_run_id, report_id)
+    service.get_report_metadata(crawl_run_id, report_id)
     rep_dir = Path("runs") / crawl_run_id / "reports" / "final" / report_id
     artifacts_map = {}
     for fn, ftype in [

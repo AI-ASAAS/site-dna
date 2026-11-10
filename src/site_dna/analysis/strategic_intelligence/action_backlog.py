@@ -1,12 +1,10 @@
 """Unified Action Backlog Generator for Site DNA Phase 11."""
 
-from typing import Any
 
 from site_dna.analysis.strategic_intelligence.prioritization import StrategicPrioritizer
 from site_dna.schemas.strategic_intelligence import (
     ActionOwnerRole,
     DuplicateFindingGroup,
-    PriorityLevel,
     RoadmapAction,
     UnifiedFinding,
 )

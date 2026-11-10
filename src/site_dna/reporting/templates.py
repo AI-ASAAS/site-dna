@@ -3,7 +3,6 @@ Comprehensive, multi-domain audit report deliverable.
 """
 
 from html import escape
-from typing import Any
 
 from site_dna.reporting.brand_assets import get_brand_css, get_logo_data_uri
 from site_dna.schemas.final_report import FinalReportContext
@@ -569,8 +568,6 @@ def render_html_report(ctx: FinalReportContext) -> str:
 """)
 
     # ==================== 4. TECHNICAL SEO & PERFORMANCE ====================
-    seo_data = da.get("technical_seo", {})
-    cwv = seo_data.get("core_web_vitals", {})
     html_parts.append(f"""
   <div class="section avoid-break">
     <div class="section-title">
@@ -758,8 +755,6 @@ def render_html_report(ctx: FinalReportContext) -> str:
     comp_data = da.get("competitors", {})
     profiles = comp_data.get("profiles", [])
     feat_matrix = comp_data.get("feature_matrix", [])
-    gaps = comp_data.get("gaps", [])
-    opps = comp_data.get("opportunities", [])
     html_parts.append(f"""
   <div class="section avoid-break">
     <div class="section-title">
@@ -827,7 +822,7 @@ def render_html_report(ctx: FinalReportContext) -> str:
           <td><span class="badge badge-pass">{'متوفر' if is_ar else 'Present'}</span></td>
           <td><span class="badge badge-pass">{'متوفر' if is_ar else 'Present'}</span></td>
         </tr>
-        ''' for f in feat_matrix[:6]) if feat_matrix else f'''
+        ''' for f in feat_matrix[:6]) if feat_matrix else '''
         <tr>
           <td><strong>منصة وواجهات برمجة التطبيقات (API)</strong></td>
           <td><span class="badge badge-pass">متوفر ومثبت</span></td>

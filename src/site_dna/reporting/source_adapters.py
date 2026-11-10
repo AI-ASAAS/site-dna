@@ -7,7 +7,6 @@ from typing import Any, Optional
 
 from site_dna.core.logging import get_logger
 from site_dna.schemas.final_report import (
-    ReportEvidenceItem,
     ReportFindingItem,
     ReportProvenance,
     ReportRecommendationItem,

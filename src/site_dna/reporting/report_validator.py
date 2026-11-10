@@ -4,7 +4,6 @@ import re
 from typing import Any
 
 from site_dna.core.logging import get_logger
-from site_dna.schemas.final_report import FinalReportContext
 
 logger = get_logger("reporting.validator")
 
@@ -99,8 +98,6 @@ class ReportIntegrityValidator:
 
     def _check_evidence_grounding(self) -> None:
         """Ensure that findings and recommendations contain traceable evidence links."""
-        valid_evidence_ids = {e.evidence_id for e in self.ctx.evidence_catalog}
-
         for finding in self.ctx.findings:
             if finding.severity in ("critical", "high") and not finding.evidence_ids and not finding.affected_urls:
                 self.warnings.append(

@@ -1,7 +1,6 @@
 """Automated 20-point quality verification for generated Site DNA PDF reports."""
 
 import io
-from pathlib import Path
 from typing import Any
 
 import pdfplumber

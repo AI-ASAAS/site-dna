@@ -1,6 +1,7 @@
 """Unit tests for Phase 11 context builder and source registry."""
 
 import pytest
+
 from site_dna.analysis.strategic_intelligence.context_builder import StrategicContextBuilder
 from site_dna.analysis.strategic_intelligence.source_registry import SUPPORTED_SOURCE_AGENTS
 from site_dna.schemas.strategic_intelligence import StrategicAnalysisRequest

@@ -1,8 +1,8 @@
 """Pydantic schemas for Site DNA Phase 12 — Final Reporting & Enterprise PDF Export."""
 
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Literal, Optional
-import uuid
 
 from pydantic import BaseModel, Field, model_validator
 

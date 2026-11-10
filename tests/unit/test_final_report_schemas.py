@@ -4,7 +4,6 @@ import pytest
 from pydantic import ValidationError
 
 from site_dna.schemas.final_report import (
-    FinalReportContext,
     FinalReportMetadata,
     FinalReportRequest,
     ReportEvidenceItem,

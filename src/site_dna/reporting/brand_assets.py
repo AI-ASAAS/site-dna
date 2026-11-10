@@ -125,7 +125,7 @@ def get_brand_css() -> str:
   --cream: {BRAND_COLORS["cream"]};
   --paper: {BRAND_COLORS["paper"]};
   --hairline: {BRAND_COLORS["hairline"]};
-  
+
   --font-sans: 'Thmanyah Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Thmanyah Serif Display', 'Thmanyah Sans', serif;
   --font-text: 'Thmanyah Serif Text', 'Thmanyah Sans', serif;

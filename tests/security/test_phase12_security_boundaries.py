@@ -1,7 +1,7 @@
 """Security and boundary tests for Phase 12 Final Reporting & PDF Export."""
 
-import pytest
 from fastapi.testclient import TestClient
+
 from site_dna.api.main import create_app
 from site_dna.reporting.pdf_renderer import PlaywrightPdfRenderer
 

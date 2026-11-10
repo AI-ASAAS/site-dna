@@ -1,6 +1,6 @@
 """Strategic Opportunity Synthesis Engine for Site DNA Phase 11."""
 
-from site_dna.schemas.strategic_intelligence import OpportunityCategory, StrategicOpportunity, UnifiedFinding
+from site_dna.schemas.strategic_intelligence import StrategicOpportunity, UnifiedFinding
 
 
 class OpportunitySynthesizer:
