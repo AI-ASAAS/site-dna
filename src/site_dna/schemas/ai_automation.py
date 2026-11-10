@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class AIDetectedEvidence(BaseModel):
     """Specific observable evidence of AI / chatbot / automation."""
-    category: Literal["widget", "script", "meta", "content", "framework"] = Field(
+    category: Literal["widget", "script", "meta", "content", "framework", "ui", "api", "asset"] = Field(
         ..., description="Category of observable indicator"
     )
     indicator: str = Field(..., description="Name of indicator or library detected")
