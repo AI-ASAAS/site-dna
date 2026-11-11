@@ -4,9 +4,7 @@ Phase 1 only produces a schema-valid placeholder report. Later phases replace
 the placeholder modules with real analyzers.
 """
 
-import json
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 
 from site_dna.models.common import ModuleResult, ModuleStatus
@@ -19,6 +17,7 @@ from site_dna.models.report import (
 )
 from site_dna.models.seo import SeoAnalysis
 from site_dna.models.visual import VisualIdentity
+from site_dna.services.report_generator import write_report
 
 PLACEHOLDER_REASON = "phase_1_placeholder"
 
@@ -93,14 +92,6 @@ def build_placeholder_report(
     )
 
 
-def write_report(report: Report, output_dir: str | Path) -> Path:
-    """Write ``report.json`` as UTF-8 with stable formatting and return its path."""
-    directory = Path(output_dir)
-    directory.mkdir(parents=True, exist_ok=True)
-    report_path = directory / "report.json"
-    payload = report.model_dump(mode="json")
-    report_path.write_text(
-        json.dumps(payload, indent=2, ensure_ascii=False),
-        encoding="utf-8",
-    )
-    return report_path
+
+
+__all__ = ["build_placeholder_report", "write_report"]

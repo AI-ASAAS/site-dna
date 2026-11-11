@@ -1,6 +1,7 @@
 """Shared URL normalization helpers for crawling and content extraction."""
 
 import ipaddress
+import math
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import tldextract
@@ -110,3 +111,67 @@ def canonicalize_url(url: str) -> str:
     query = urlencode(sorted(filtered))
 
     return urlunsplit((scheme, netloc, path, query, ""))
+
+
+def normalize_url(url: str | None) -> str | None:
+    """Return a trimmed, canonical absolute URL, or ``None`` for missing input."""
+    if url is None:
+        return None
+    value = url.strip()
+    if not value:
+        return None
+    parts = urlsplit(value)
+    if not parts.scheme or not parts.netloc:
+        return value
+    return canonicalize_url(value)
+
+
+def normalize_text(value: str | None) -> str | None:
+    """Collapse whitespace and return ``None`` for empty text."""
+    if value is None:
+        return None
+    normalized = " ".join(value.split())
+    return normalized or None
+
+
+def normalize_number(value: object) -> int | float | None:
+    """Return a finite number, accepting numeric strings; booleans are ignored."""
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        number = value
+    elif isinstance(value, str):
+        try:
+            number = float(value.strip())
+        except ValueError:
+            return None
+    else:
+        return None
+    if not math.isfinite(number):
+        return None
+    return int(number) if isinstance(number, float) and number.is_integer() else number
+
+
+def normalize_list(values: object) -> list:
+    """Return a list copy, dropping ``None`` entries; non-sequences become empty."""
+    if values is None:
+        return []
+    if isinstance(values, (list, tuple, set)):
+        return [value for value in values if value is not None]
+    return [values]
+
+
+def normalize_issue(
+    rule_id: str,
+    *,
+    url: str | None = None,
+    message: str | None = None,
+    confidence: str | None = None,
+) -> dict:
+    """Normalize an actionable issue to the report's flat issue shape."""
+    return {
+        "id": rule_id,
+        "url": normalize_url(url),
+        "message": normalize_text(message),
+        "confidence": confidence,
+    }

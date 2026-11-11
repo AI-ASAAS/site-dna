@@ -86,3 +86,14 @@ This file records every assumption made while implementing the Website Intellige
 - **Broken links.** Checks are internal-first, deduplicated with `canonicalize_url`, capped at 200 targets, and run with concurrency 10. Internal targets disallowed by robots.txt are skipped. Transport errors and 4xx/5xx responses are broken links.
 - **Duplicates.** Duplicate titles are grouped case-insensitively after trimming; duplicate content is grouped by the Phase 3 `html_sha256`.
 - **Summary.** `SeoSummary` counts every check, including `not_available`. `SeoAnalysis.issues` is the flat list of only `failed` and `warning` checks, matching the Phase 7 contract.
+
+## Phase 8 - Report Generator
+
+- **Assembly boundary.** `services/report_generator.build_report` accepts the `ScanContext` and a mapping of module-name to `ModuleResult`, so Phase 9 can pass analyzer output without coupling the report layer to crawler internals.
+- **Status mapping.** All module statuses `failed` becomes `scan_status=failed`; any `partial`, `failed`, `skipped`, or `not_available` becomes `partial`; otherwise the scan is `completed`. `rejected` remains reserved for a future permission/validation rejection path.
+- **Metadata.** `final_url` is taken from the first crawled page with a URL, and `domain` uses the Phase 2 registrable-domain helper. `scan_timestamp` is the context start time, while `processing_time_seconds` is measured when the report is assembled.
+- **Null and list policy.** Missing module data becomes a schema-valid empty `WebsiteContent` with `pages=[]`; absent modules are recorded as `skipped`. Unknown scalar values stay `None` rather than empty strings.
+- **Execution summary.** Module warnings and errors are flattened into the top-level summary, and module timings are recorded in seconds. Module durations are retained in each `ModuleResult`.
+- **Normalizer.** `services/normalizer.py` keeps the Phase 2 URL helpers and adds pure `normalize_url`, `normalize_text`, `normalize_number`, `normalize_list`, and `normalize_issue` helpers. Non-finite numbers and empty strings normalize to `None`.
+- **Atomic write.** `write_report` serializes to `.report.json.tmp`, flushes and `fsync`s, then uses `os.replace` to publish `report.json`, so a crash cannot leave a partial report at the final path.
+- **Schema.** `schema/schema_export.py` generates the Draft 2020-12 schema from the Pydantic `Report` model. `schema/report.schema.json` is the checked-in artifact and is validated against generated reports with `jsonschema`.
