@@ -1,11 +1,11 @@
 """Unit tests for Phase 12 Playwright PDF rendering and 20-point PDF quality verification."""
 
+
 import pytest
-from pathlib import Path
 
 from site_dna.reporting.brand_assets import get_thmanyah_font_css
-from site_dna.reporting.pdf_renderer import PlaywrightPdfRenderer
 from site_dna.reporting.pdf_quality import PdfQualityInspector
+from site_dna.reporting.pdf_renderer import PlaywrightPdfRenderer
 
 
 @pytest.mark.asyncio

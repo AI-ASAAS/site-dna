@@ -1,7 +1,7 @@
 """CrewAI Strategic Intelligence Tool for Site DNA Phase 11."""
 
 import json
-from typing import Any, Optional, Type
+from typing import Type
 
 from crewai.tools import BaseTool
 from pydantic import BaseModel, Field

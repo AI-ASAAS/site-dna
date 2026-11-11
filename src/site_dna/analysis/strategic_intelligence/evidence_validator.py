@@ -7,7 +7,6 @@ from site_dna.schemas.strategic_intelligence import (
     ConflictRecord,
     DuplicateFindingGroup,
     RoadmapAction,
-    UnifiedFinding,
 )
 
 _FINANCIAL_OR_ROI_PATTERN = re.compile(

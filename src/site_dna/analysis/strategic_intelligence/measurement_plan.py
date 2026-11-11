@@ -1,6 +1,5 @@
 """Measurement Plan Generator for Site DNA Phase 11."""
 
-from typing import Any
 
 from site_dna.schemas.strategic_intelligence import MeasurementPlan, UnifiedFinding
 

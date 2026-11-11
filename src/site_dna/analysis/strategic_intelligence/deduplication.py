@@ -1,7 +1,6 @@
 """Finding Deduplication Engine for Site DNA Phase 11."""
 
 import re
-from typing import Any
 
 from site_dna.schemas.strategic_intelligence import DuplicateFindingGroup, UnifiedFinding
 

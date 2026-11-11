@@ -64,7 +64,7 @@ class StrategicReportBuilder:
             "",
             "## 4. المشكلات الموحدة",
             "",
-            f"تم توحيد وتبويب الملاحظات الفنية وفق نموذج موحد يضمن تتبع الأدلة الأصلية ودرجة الإلحاح:",
+            "تم توحيد وتبويب الملاحظات الفنية وفق نموذج موحد يضمن تتبع الأدلة الأصلية ودرجة الإلحاح:",
             "",
         ])
 
@@ -293,7 +293,7 @@ class StrategicReportBuilder:
             for hr in report.manual_reviews:
                 lines.append(f"### {hr.review_reason_ar}")
                 lines.append(f"- **سؤال المراجعة:** {hr.question_for_reviewer_ar}")
-                lines.append(f"- **الخيارات الموصى بها:**")
+                lines.append("- **الخيارات الموصى بها:**")
                 for opt in hr.recommended_options:
                     lines.append(f"  - {opt}")
                 lines.append("")
@@ -307,7 +307,7 @@ class StrategicReportBuilder:
             "",
             f"- **إجمالي المهام المعتمدة:** {stats.actions_count} مهمة",
             f"- **المهام المنجزة والمحققة:** {stats.verified_actions_count} مهمة",
-            f"- **سجل التدقيق:** كافة التحديثات محفوظة بصورة دائمة ومؤرخة بالمعرفات الثابتة.",
+            "- **سجل التدقيق:** كافة التحديثات محفوظة بصورة دائمة ومؤرخة بالمعرفات الثابتة.",
             "",
             "---",
             "",

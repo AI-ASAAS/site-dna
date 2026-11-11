@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Any, Optional
 
 from site_dna import __version__
+from site_dna.app.scan import run_scan_cli, run_schema_cli
 from site_dna.core.config import get_settings
 from site_dna.core.logging import setup_logging
-from site_dna.services.gemini_diagnostics import test_direct_gemini_connection
 
 
 def run_doctor() -> int:
@@ -126,6 +126,8 @@ def run_smoke(direct: bool, crew: bool, flow: bool, live: bool) -> int:
 
     # Route 1: Direct SDK Test
     if direct:
+        from site_dna.services.gemini_diagnostics import test_direct_gemini_connection
+
         print(f"Executing Direct Gemini Connection Test ({settings.gemini_model})...")
         result = test_direct_gemini_connection(settings=settings)
         print(f"Outcome  : {result.status.value}")
@@ -1080,6 +1082,7 @@ def run_analyze_strategy(
 ) -> int:
     """Execute AI Strategic Intelligence & Action Roadmap synthesis (Phase 11)."""
     import asyncio
+
     from site_dna.analysis.strategic_intelligence.service import StrategicIntelligenceService
     from site_dna.schemas.strategic_intelligence import StrategicAnalysisRequest
 
@@ -1149,6 +1152,7 @@ def run_export_report(
     """Execute Phase 12 Enterprise Report Export & Quality Verification."""
     import asyncio
     import shutil
+
     from site_dna.reporting.export_service import FinalReportExportService
     from site_dna.schemas.final_report import FinalReportRequest
 
@@ -1240,8 +1244,36 @@ def main() -> None:
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # Command: scan (Website Intelligence MVP, Phases 1-9)
+    scan_parser = subparsers.add_parser(
+        "scan", help="Run a complete website intelligence scan"
+    )
+    scan_parser.add_argument("url", nargs="?", help="Target website URL")
+    scan_parser.add_argument(
+        "--i-have-permission",
+        action="store_true",
+        help="Attest that you have permission to scan the target website",
+    )
+    scan_parser.add_argument("--max-pages", type=int, default=None, help="Maximum pages to scan")
+    scan_parser.add_argument("--max-depth", type=int, default=None, help="Maximum crawl depth")
+    scan_parser.add_argument("--output-dir", default=None, help="Directory for scan artifacts")
+    scan_parser.add_argument(
+        "--embed-images", action="store_true", help="Embed screenshots as base64 in the report"
+    )
+    scan_parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
+    scan_parser.add_argument(
+        "--export-schema", action="store_true", help="Export the report JSON Schema and exit"
+    )
+    scan_parser.add_argument("--schema-output", default=None, help="Destination for --export-schema")
+
     # Command: doctor
     subparsers.add_parser("doctor", help="Verify environment, dependencies, and configuration")
+
+    # Command: schema
+    schema_parser = subparsers.add_parser(
+        "schema", help="Export the report JSON Schema"
+    )
+    schema_parser.add_argument("--output", default=None, help="Destination schema path")
 
     # Command: smoke
     smoke_parser = subparsers.add_parser("smoke", help="Execute diagnostic smoke tests")
@@ -1407,8 +1439,24 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.command == "doctor":
+    if args.command == "scan":
+        if args.export_schema:
+            sys.exit(run_schema_cli(args.schema_output))
+        sys.exit(
+            run_scan_cli(
+                url=args.url,
+                i_have_permission=args.i_have_permission,
+                max_pages=args.max_pages,
+                max_depth=args.max_depth,
+                output_dir=args.output_dir,
+                embed_images=args.embed_images,
+                verbose=args.verbose,
+            )
+        )
+    elif args.command == "doctor":
         sys.exit(run_doctor())
+    elif args.command == "schema":
+        sys.exit(run_schema_cli(args.output))
     elif args.command == "smoke":
         sys.exit(run_smoke(direct=args.direct, crew=args.crew, flow=args.flow, live=args.live))
     elif args.command == "discover":

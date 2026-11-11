@@ -1,6 +1,7 @@
 """Integration tests for Phase 11 Strategic Intelligence API endpoints."""
 
 from fastapi.testclient import TestClient
+
 from site_dna.api.main import create_app
 
 

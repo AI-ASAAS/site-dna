@@ -5,7 +5,7 @@ defects, specific evidence findings, and real technical observations, avoiding
 generic static boilerplate across analyzed sites.
 """
 
-from site_dna.schemas.strategic_intelligence import OpportunityCategory, StrategicOpportunity, UnifiedFinding
+from site_dna.schemas.strategic_intelligence import StrategicOpportunity, UnifiedFinding
 
 
 def _extract_specific_topics(findings: list[UnifiedFinding], max_items: int = 3) -> tuple[str, str]:

@@ -1,7 +1,7 @@
 """Integration tests for Phase 12 Final Reports API endpoints."""
 
-import pytest
 from fastapi.testclient import TestClient
+
 from site_dna.api.main import create_app
 
 

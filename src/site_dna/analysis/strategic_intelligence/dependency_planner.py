@@ -1,7 +1,6 @@
 """Dependency Planner & Topological Sequencer for Site DNA Phase 11."""
 
 from collections import defaultdict
-from typing import Any
 
 from site_dna.schemas.strategic_intelligence import ActionDependency, RoadmapAction
 

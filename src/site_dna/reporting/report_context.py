@@ -1,9 +1,7 @@
 """Canonical FinalReportContext builder assembling data across all Site DNA analysis phases."""
 
-from datetime import datetime, timezone
-import json
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from site_dna.core.logging import get_logger
 from site_dna.reporting.evidence_catalog import EvidenceCatalogBuilder
@@ -11,11 +9,9 @@ from site_dna.reporting.source_adapters import SourceArtifactsAdapter
 from site_dna.schemas.final_report import (
     FinalReportContext,
     ReportFindingItem,
-    ReportMode,
     ReportPaperSize,
     ReportProvenance,
     ReportRecommendationItem,
-    ReportRoadmapWaveItem,
     ReportStatus,
 )
 

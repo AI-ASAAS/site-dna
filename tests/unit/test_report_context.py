@@ -1,6 +1,7 @@
 """Unit tests for ReportContextBuilder on real crawl run."""
 
 from pathlib import Path
+
 import pytest
 
 from site_dna.reporting.report_context import ReportContextBuilder

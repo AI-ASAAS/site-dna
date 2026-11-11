@@ -1,0 +1,1877 @@
+{
+  "$defs": {
+    "CheckRecord": {
+      "description": "Single SEO rule result, scoped to a page or the whole site.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "page",
+            "site"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "status": {
+          "$ref": "#/$defs/CheckStatus"
+        },
+        "value": {
+          "default": null,
+          "title": "Value"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "threshold": {
+          "default": null,
+          "title": "Threshold"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "enum": [
+                "high",
+                "medium"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        }
+      },
+      "required": [
+        "id",
+        "scope",
+        "status"
+      ],
+      "title": "CheckRecord",
+      "type": "object"
+    },
+    "CheckStatus": {
+      "description": "Outcome of a single SEO rule or check.",
+      "enum": [
+        "passed",
+        "warning",
+        "failed",
+        "not_available"
+      ],
+      "title": "CheckStatus",
+      "type": "string"
+    },
+    "ColorRecord": {
+      "description": "Observed color with ranking metadata (facts only).",
+      "properties": {
+        "hex": {
+          "title": "Hex",
+          "type": "string"
+        },
+        "count": {
+          "default": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "weight": {
+          "default": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "share": {
+          "default": 0.0,
+          "title": "Share",
+          "type": "number"
+        },
+        "usages": {
+          "$ref": "#/$defs/ColorUsage"
+        },
+        "source": {
+          "const": "computed",
+          "default": "computed",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hex"
+      ],
+      "title": "ColorRecord",
+      "type": "object"
+    },
+    "ColorRoleRecord": {
+      "description": "Heuristically assigned color role (inferred, not a fact).",
+      "properties": {
+        "hex": {
+          "title": "Hex",
+          "type": "string"
+        },
+        "count": {
+          "default": 0,
+          "title": "Count",
+          "type": "integer"
+        },
+        "weight": {
+          "default": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "share": {
+          "default": 0.0,
+          "title": "Share",
+          "type": "number"
+        },
+        "usages": {
+          "$ref": "#/$defs/ColorUsage"
+        },
+        "source": {
+          "const": "inferred",
+          "default": "inferred",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "hex"
+      ],
+      "title": "ColorRoleRecord",
+      "type": "object"
+    },
+    "ColorRoles": {
+      "description": "Role assignments derived from the observed color palette.",
+      "properties": {
+        "background": {
+          "items": {
+            "$ref": "#/$defs/ColorRoleRecord"
+          },
+          "title": "Background",
+          "type": "array"
+        },
+        "text": {
+          "items": {
+            "$ref": "#/$defs/ColorRoleRecord"
+          },
+          "title": "Text",
+          "type": "array"
+        },
+        "primary": {
+          "items": {
+            "$ref": "#/$defs/ColorRoleRecord"
+          },
+          "title": "Primary",
+          "type": "array"
+        },
+        "secondary": {
+          "items": {
+            "$ref": "#/$defs/ColorRoleRecord"
+          },
+          "title": "Secondary",
+          "type": "array"
+        },
+        "other": {
+          "items": {
+            "$ref": "#/$defs/ColorRoleRecord"
+          },
+          "title": "Other",
+          "type": "array"
+        },
+        "roles_method": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Roles Method"
+        }
+      },
+      "title": "ColorRoles",
+      "type": "object"
+    },
+    "ColorUsage": {
+      "description": "Per-context usage counters for a color sample.",
+      "properties": {
+        "text": {
+          "default": 0,
+          "title": "Text",
+          "type": "integer"
+        },
+        "background": {
+          "default": 0,
+          "title": "Background",
+          "type": "integer"
+        },
+        "border": {
+          "default": 0,
+          "title": "Border",
+          "type": "integer"
+        },
+        "svg": {
+          "default": 0,
+          "title": "Svg",
+          "type": "integer"
+        },
+        "button": {
+          "default": 0,
+          "title": "Button",
+          "type": "integer"
+        },
+        "link": {
+          "default": 0,
+          "title": "Link",
+          "type": "integer"
+        }
+      },
+      "title": "ColorUsage",
+      "type": "object"
+    },
+    "ColorsAnalysis": {
+      "description": "Observed palette plus inferred roles.",
+      "properties": {
+        "all": {
+          "items": {
+            "$ref": "#/$defs/ColorRecord"
+          },
+          "title": "All",
+          "type": "array"
+        },
+        "roles": {
+          "$ref": "#/$defs/ColorRoles"
+        }
+      },
+      "title": "ColorsAnalysis",
+      "type": "object"
+    },
+    "Diagnostic": {
+      "description": "Lighthouse diagnostic or informative audit.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "display_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Display Value"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Diagnostic",
+      "type": "object"
+    },
+    "ExecutionSummary": {
+      "description": "Aggregated module outcomes, warnings, errors, and timings.",
+      "properties": {
+        "module_results": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Module Results",
+          "type": "object"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ModuleError"
+          },
+          "title": "Errors",
+          "type": "array"
+        },
+        "timings": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Timings",
+          "type": "object"
+        }
+      },
+      "title": "ExecutionSummary",
+      "type": "object"
+    },
+    "FieldMetric": {
+      "description": "CrUX field metric percentile and rating category.",
+      "properties": {
+        "percentile": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Percentile"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        }
+      },
+      "title": "FieldMetric",
+      "type": "object"
+    },
+    "FieldMetrics": {
+      "description": "CrUX field data for the URL or, as fallback, the origin.",
+      "properties": {
+        "lcp": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FieldMetric"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "inp": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FieldMetric"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "cls": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FieldMetric"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "source": {
+          "anyOf": [
+            {
+              "enum": [
+                "crux_url",
+                "crux_origin"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        }
+      },
+      "title": "FieldMetrics",
+      "type": "object"
+    },
+    "FileRef": {
+      "description": "Reference to an artifact stored on disk instead of inside the report.",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "format": {
+          "title": "Format",
+          "type": "string"
+        },
+        "bytes": {
+          "title": "Bytes",
+          "type": "integer"
+        },
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        }
+      },
+      "required": [
+        "path",
+        "format",
+        "bytes",
+        "sha256"
+      ],
+      "title": "FileRef",
+      "type": "object"
+    },
+    "FontFamilyRecord": {
+      "description": "Ranked font family with parsed fallback stack.",
+      "properties": {
+        "family": {
+          "title": "Family",
+          "type": "string"
+        },
+        "weight": {
+          "default": 0.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "primary": {
+          "default": false,
+          "title": "Primary",
+          "type": "boolean"
+        },
+        "fallbacks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Fallbacks",
+          "type": "array"
+        },
+        "loaded": {
+          "default": false,
+          "title": "Loaded",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "family"
+      ],
+      "title": "FontFamilyRecord",
+      "type": "object"
+    },
+    "HeadingLists": {
+      "description": "Headings grouped by level, in document order.",
+      "properties": {
+        "h1": {
+          "items": {
+            "type": "string"
+          },
+          "title": "H1",
+          "type": "array"
+        },
+        "h2": {
+          "items": {
+            "type": "string"
+          },
+          "title": "H2",
+          "type": "array"
+        },
+        "h3": {
+          "items": {
+            "type": "string"
+          },
+          "title": "H3",
+          "type": "array"
+        }
+      },
+      "title": "HeadingLists",
+      "type": "object"
+    },
+    "HeadingOutlineItem": {
+      "description": "Single heading entry in the document outline.",
+      "properties": {
+        "level": {
+          "title": "Level",
+          "type": "integer"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "text"
+      ],
+      "title": "HeadingOutlineItem",
+      "type": "object"
+    },
+    "HeadingStyle": {
+      "description": "Computed style for a heading level.",
+      "properties": {
+        "color": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Color"
+        },
+        "font_size": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Font Size"
+        },
+        "font_weight": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Font Weight"
+        },
+        "font_family": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Font Family"
+        },
+        "line_height": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Line Height"
+        },
+        "letter_spacing": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Letter Spacing"
+        },
+        "text_transform": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Transform"
+        }
+      },
+      "title": "HeadingStyle",
+      "type": "object"
+    },
+    "ImageItem": {
+      "description": "Image discovered on a page.",
+      "properties": {
+        "src": {
+          "title": "Src",
+          "type": "string"
+        },
+        "alt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Alt"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height"
+        },
+        "loading": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Loading"
+        }
+      },
+      "required": [
+        "src"
+      ],
+      "title": "ImageItem",
+      "type": "object"
+    },
+    "LabMetrics": {
+      "description": "Lighthouse lab metrics.",
+      "properties": {
+        "lcp_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lcp Ms"
+        },
+        "fcp_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fcp Ms"
+        },
+        "speed_index_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speed Index Ms"
+        },
+        "tbt_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tbt Ms"
+        },
+        "cls": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cls"
+        }
+      },
+      "title": "LabMetrics",
+      "type": "object"
+    },
+    "LinkItem": {
+      "description": "Link discovered on a page.",
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "internal": {
+          "title": "Internal",
+          "type": "boolean"
+        },
+        "rel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rel"
+        }
+      },
+      "required": [
+        "url",
+        "text",
+        "internal"
+      ],
+      "title": "LinkItem",
+      "type": "object"
+    },
+    "ModuleError": {
+      "description": "Structured module error that never leaks a traceback into the report.",
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ModuleError",
+      "type": "object"
+    },
+    "ModuleResult_Performance_": {
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ModuleStatus"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "duration_ms": {
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Performance"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ModuleError"
+          },
+          "title": "Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "duration_ms"
+      ],
+      "title": "ModuleResult[Performance]",
+      "type": "object"
+    },
+    "ModuleResult_SeoAnalysis_": {
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ModuleStatus"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "duration_ms": {
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SeoAnalysis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ModuleError"
+          },
+          "title": "Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "duration_ms"
+      ],
+      "title": "ModuleResult[SeoAnalysis]",
+      "type": "object"
+    },
+    "ModuleResult_VisualIdentity_": {
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ModuleStatus"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "duration_ms": {
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VisualIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ModuleError"
+          },
+          "title": "Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "duration_ms"
+      ],
+      "title": "ModuleResult[VisualIdentity]",
+      "type": "object"
+    },
+    "ModuleResult_WebsiteContent_": {
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ModuleStatus"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "duration_ms": {
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "data": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WebsiteContent"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "errors": {
+          "items": {
+            "$ref": "#/$defs/ModuleError"
+          },
+          "title": "Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status",
+        "duration_ms"
+      ],
+      "title": "ModuleResult[WebsiteContent]",
+      "type": "object"
+    },
+    "ModuleStatus": {
+      "description": "Normalized outcome of a single analyzer module.",
+      "enum": [
+        "ok",
+        "partial",
+        "failed",
+        "skipped",
+        "not_available"
+      ],
+      "title": "ModuleStatus",
+      "type": "string"
+    },
+    "Opportunity": {
+      "description": "Lighthouse opportunity with estimated savings.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "savings_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Savings Ms"
+        },
+        "savings_bytes": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Savings Bytes"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "Opportunity",
+      "type": "object"
+    },
+    "PageData": {
+      "description": "Content and structure extracted from a single crawled page.",
+      "properties": {
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "final_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Final Url"
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Status"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Category"
+        },
+        "depth": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Depth"
+        },
+        "fetched_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fetched At"
+        },
+        "fetch_ms": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fetch Ms"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "markdown": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Markdown"
+        },
+        "markdown_file": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FileRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "markdown_chars": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Markdown Chars"
+        },
+        "word_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Word Count"
+        },
+        "headings": {
+          "$ref": "#/$defs/HeadingLists"
+        },
+        "heading_outline": {
+          "items": {
+            "$ref": "#/$defs/HeadingOutlineItem"
+          },
+          "title": "Heading Outline",
+          "type": "array"
+        },
+        "paragraphs_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Paragraphs Count"
+        },
+        "lists_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lists Count"
+        },
+        "links": {
+          "items": {
+            "$ref": "#/$defs/LinkItem"
+          },
+          "title": "Links",
+          "type": "array"
+        },
+        "images": {
+          "items": {
+            "$ref": "#/$defs/ImageItem"
+          },
+          "title": "Images",
+          "type": "array"
+        },
+        "html_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Html Sha256"
+        },
+        "raw_html": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Html"
+        },
+        "http_headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Http Headers",
+          "type": "object"
+        },
+        "non_http_link_counts": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Non Http Link Counts",
+          "type": "object"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "PageData",
+      "type": "object"
+    },
+    "Performance": {
+      "description": "Combined mobile and desktop performance results.",
+      "properties": {
+        "mobile": {
+          "$ref": "#/$defs/StrategyPerformance"
+        },
+        "desktop": {
+          "$ref": "#/$defs/StrategyPerformance"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "mobile",
+        "desktop"
+      ],
+      "title": "Performance",
+      "type": "object"
+    },
+    "ProjectInfo": {
+      "description": "Scan metadata describing the requested and final target.",
+      "properties": {
+        "input_url": {
+          "title": "Input Url",
+          "type": "string"
+        },
+        "final_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Final Url"
+        },
+        "domain": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Domain"
+        },
+        "scan_timestamp": {
+          "format": "date-time",
+          "title": "Scan Timestamp",
+          "type": "string"
+        },
+        "scan_status": {
+          "enum": [
+            "completed",
+            "partial",
+            "failed",
+            "rejected"
+          ],
+          "title": "Scan Status",
+          "type": "string"
+        },
+        "processing_time_seconds": {
+          "default": 0.0,
+          "title": "Processing Time Seconds",
+          "type": "number"
+        },
+        "permission_attested": {
+          "title": "Permission Attested",
+          "type": "boolean"
+        },
+        "tool_version": {
+          "title": "Tool Version",
+          "type": "string"
+        },
+        "config": {
+          "additionalProperties": true,
+          "title": "Config",
+          "type": "object"
+        }
+      },
+      "required": [
+        "input_url",
+        "scan_status",
+        "permission_attested",
+        "tool_version"
+      ],
+      "title": "ProjectInfo",
+      "type": "object"
+    },
+    "SeoAnalysis": {
+      "description": "Complete SEO analysis output.",
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/CheckRecord"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "issues": {
+          "items": {
+            "$ref": "#/$defs/SeoIssue"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "summary": {
+          "$ref": "#/$defs/SeoSummary"
+        }
+      },
+      "title": "SeoAnalysis",
+      "type": "object"
+    },
+    "SeoIssue": {
+      "description": "Flat actionable issue extracted from failed or warning checks.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Url"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "enum": [
+                "high",
+                "medium"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "SeoIssue",
+      "type": "object"
+    },
+    "SeoSummary": {
+      "description": "Counts of check statuses for the SEO module.",
+      "properties": {
+        "passed": {
+          "default": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "warning": {
+          "default": 0,
+          "title": "Warning",
+          "type": "integer"
+        },
+        "failed": {
+          "default": 0,
+          "title": "Failed",
+          "type": "integer"
+        },
+        "not_available": {
+          "default": 0,
+          "title": "Not Available",
+          "type": "integer"
+        }
+      },
+      "title": "SeoSummary",
+      "type": "object"
+    },
+    "StrategyPerformance": {
+      "description": "Performance result for one PSI strategy (mobile or desktop).",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/ModuleStatus"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        },
+        "lab": {
+          "$ref": "#/$defs/LabMetrics"
+        },
+        "field": {
+          "$ref": "#/$defs/FieldMetrics"
+        },
+        "opportunities": {
+          "items": {
+            "$ref": "#/$defs/Opportunity"
+          },
+          "title": "Opportunities",
+          "type": "array"
+        },
+        "diagnostics": {
+          "items": {
+            "$ref": "#/$defs/Diagnostic"
+          },
+          "title": "Diagnostics",
+          "type": "array"
+        },
+        "lighthouse_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lighthouse Version"
+        },
+        "fetch_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fetch Time"
+        },
+        "final_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Final Url"
+        },
+        "runtime_errors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Runtime Errors",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "StrategyPerformance",
+      "type": "object"
+    },
+    "TypographyAnalysis": {
+      "description": "Typography evidence collected from the rendered page.",
+      "properties": {
+        "font_families": {
+          "items": {
+            "$ref": "#/$defs/FontFamilyRecord"
+          },
+          "title": "Font Families",
+          "type": "array"
+        },
+        "font_sizes": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Font Sizes",
+          "type": "object"
+        },
+        "font_weights": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Font Weights",
+          "type": "object"
+        },
+        "heading_styles": {
+          "additionalProperties": {
+            "$ref": "#/$defs/HeadingStyle"
+          },
+          "title": "Heading Styles",
+          "type": "object"
+        }
+      },
+      "title": "TypographyAnalysis",
+      "type": "object"
+    },
+    "VisualIdentity": {
+      "description": "Visual identity evidence for the scanned site.",
+      "properties": {
+        "colors": {
+          "$ref": "#/$defs/ColorsAnalysis"
+        },
+        "typography": {
+          "$ref": "#/$defs/TypographyAnalysis"
+        },
+        "screenshot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FileRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "css_variables": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Css Variables",
+          "type": "object"
+        },
+        "sampled_elements": {
+          "default": 0,
+          "title": "Sampled Elements",
+          "type": "integer"
+        },
+        "truncated_sampling": {
+          "default": false,
+          "title": "Truncated Sampling",
+          "type": "boolean"
+        }
+      },
+      "title": "VisualIdentity",
+      "type": "object"
+    },
+    "WebsiteContent": {
+      "description": "Content and structure data for all crawled pages.",
+      "properties": {
+        "pages": {
+          "items": {
+            "$ref": "#/$defs/PageData"
+          },
+          "title": "Pages",
+          "type": "array"
+        },
+        "total_pages": {
+          "default": 0,
+          "title": "Total Pages",
+          "type": "integer"
+        },
+        "total_words": {
+          "default": 0,
+          "title": "Total Words",
+          "type": "integer"
+        },
+        "pages_failed": {
+          "default": 0,
+          "title": "Pages Failed",
+          "type": "integer"
+        }
+      },
+      "title": "WebsiteContent",
+      "type": "object"
+    }
+  },
+  "description": "Single schema-valid report for one website scan.",
+  "properties": {
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "scan_id": {
+      "title": "Scan Id",
+      "type": "string"
+    },
+    "project_info": {
+      "$ref": "#/$defs/ProjectInfo"
+    },
+    "website_content": {
+      "$ref": "#/$defs/ModuleResult_WebsiteContent_"
+    },
+    "visual_identity": {
+      "$ref": "#/$defs/ModuleResult_VisualIdentity_"
+    },
+    "performance": {
+      "$ref": "#/$defs/ModuleResult_Performance_"
+    },
+    "seo_analysis": {
+      "$ref": "#/$defs/ModuleResult_SeoAnalysis_"
+    },
+    "execution_summary": {
+      "$ref": "#/$defs/ExecutionSummary"
+    }
+  },
+  "required": [
+    "scan_id",
+    "project_info",
+    "website_content",
+    "visual_identity",
+    "performance",
+    "seo_analysis"
+  ],
+  "title": "Report",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

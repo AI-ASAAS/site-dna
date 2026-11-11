@@ -1,6 +1,6 @@
 """Source Agent Registry and Metadata for Site DNA Strategic Intelligence."""
 
-from typing import Any, NamedTuple
+from typing import NamedTuple
 
 
 class SourceAgentMeta(NamedTuple):

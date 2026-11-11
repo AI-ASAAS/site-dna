@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "beautifulsoup4>=4.15.0",
+    "crawl4ai>=0.9.5",
     "crewai[google-genai]>=1.15.37",
     "defusedxml>=0.7.1",
     "fastapi>=0.162.0",
@@ -17,6 +18,8 @@ dependencies = [
     "pydantic>=2.12.5",
     "pydantic-settings>=2.16.2",
     "python-dotenv>=1.2.4",
+    "selectolax>=1.0.2",
+    "tldextract>=5.4.0",
     "uvicorn[standard]>=0.54.0",
 ]
 
@@ -31,6 +34,7 @@ build-backend = "uv_build"
 dev = [
     "pytest>=9.2.0",
     "pytest-asyncio>=1.4.1.post1",
+    "respx>=0.23.1",
     "ruff>=0.17.4",
 ]
 
@@ -41,6 +45,8 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 markers = [
     "integration: marks tests requiring live external services/credentials (deselect with '-m \"not integration\"')",
+    "live: marks tests that hit the real internet (skipped by default)",
+    "browser: marks tests that require a Playwright Chromium browser",
 ]
 
 [tool.ruff]

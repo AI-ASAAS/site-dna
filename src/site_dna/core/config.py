@@ -4,7 +4,7 @@ import os
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import BaseModel, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -42,6 +42,74 @@ class Settings(BaseSettings):
     enable_live_llm_tests: bool = Field(
         default=False,
         description="Explicit opt-in flag for tests requiring live Gemini network calls",
+    )
+
+    # Website Intelligence MVP (Phases 1-9): scan configuration
+    psi_api_key: Optional[SecretStr] = Field(
+        default=None,
+        description="Google PageSpeed Insights API key (optional; unauthenticated calls are attempted)",
+    )
+    storage_dir: str = Field(
+        default="storage",
+        description="Directory for per-scan runtime artifacts (gitignored)",
+    )
+    allow_private_hosts: bool = Field(
+        default=False,
+        description="Allow private/loopback targets; only honored when APP_ENV=test",
+    )
+    scan_max_pages: int = Field(
+        default=20,
+        ge=1,
+        le=200,
+        description="Default maximum pages per scan",
+    )
+    scan_max_depth: int = Field(
+        default=2,
+        ge=0,
+        le=10,
+        description="Default maximum crawl depth per scan",
+    )
+    scan_max_broken_link_checks: int = Field(
+        default=200,
+        ge=0,
+        le=5000,
+        description="Default maximum broken-link checks per scan",
+    )
+    scan_request_timeout_seconds: float = Field(
+        default=20.0,
+        ge=1.0,
+        le=120.0,
+        description="Default HTTP request timeout for scans",
+    )
+    scan_page_timeout_seconds: float = Field(
+        default=45.0,
+        ge=1.0,
+        le=300.0,
+        description="Default browser page timeout for scans",
+    )
+    scan_screenshot_max_height: int = Field(
+        default=16000,
+        ge=1000,
+        le=50000,
+        description="Maximum full-page screenshot height in pixels for scans",
+    )
+    scan_psi_timeout_seconds: float = Field(
+        default=90.0,
+        ge=1.0,
+        le=300.0,
+        description="Default PageSpeed Insights timeout for scans",
+    )
+    scan_per_host_rps: float = Field(
+        default=2.0,
+        gt=0.0,
+        le=50.0,
+        description="Default per-host request rate (requests per second)",
+    )
+    scan_max_total_seconds: float = Field(
+        default=300.0,
+        ge=1.0,
+        le=3600.0,
+        description="Default wall-clock budget for a whole scan",
     )
 
     # Phase 02: Website Discovery & Crawler Configuration
@@ -844,15 +912,81 @@ class Settings(BaseSettings):
             return self.strategic_api_token.get_secret_value().strip()
         return None
 
+    def get_effective_psi_api_key(self) -> Optional[str]:
+        """Return the PageSpeed Insights API key if configured."""
+        if self.psi_api_key and self.psi_api_key.get_secret_value().strip():
+            return self.psi_api_key.get_secret_value().strip()
+        return None
+
+    def private_hosts_allowed(self) -> bool:
+        """Return True only when private hosts are allowed AND the app is in test mode."""
+        return self.allow_private_hosts and self.app_env.strip().lower() == "test"
+
     def __repr__(self) -> str:
         """Sanitized string representation ensuring no credentials leak."""
         key_status = "configured" if self.is_gemini_configured() else "missing"
+        psi_status = "configured" if self.get_effective_psi_api_key() else "missing"
         token_status = "configured" if self.get_effective_discovery_token() else "missing"
         return (
             f"Settings(app_name='{self.app_name}', app_env='{self.app_env}', "
             f"host='{self.app_host}:{self.app_port}', gemini_model='{self.gemini_model}', "
-            f"gemini_api_key=[{key_status}], discovery_api_token=[{token_status}], "
+            f"gemini_api_key=[{key_status}], psi_api_key=[{psi_status}], "
+            f"discovery_api_token=[{token_status}], storage_dir='{self.storage_dir}', "
+            f"allow_private_hosts={self.allow_private_hosts}, "
             f"crawler_max_pages={self.crawler_max_pages}, log_level='{self.log_level}')"
+        )
+
+
+class ScanConfig(BaseModel):
+    """Per-run configuration built from CLI flags and application settings."""
+
+    input_url: str
+    max_pages: int = 20
+    max_depth: int = 2
+    max_broken_link_checks: int = 200
+    request_timeout: float = 20.0
+    page_timeout: float = 45.0
+    psi_timeout: float = 90.0
+    per_host_rps: float = 2.0
+    max_total_seconds: float = 300.0
+    embed_images: bool = False
+    output_dir: Optional[str] = None
+    verbose: bool = False
+    permission_attested: bool = False
+
+    @classmethod
+    def from_settings(
+        cls,
+        settings: Settings,
+        *,
+        input_url: str,
+        max_pages: Optional[int] = None,
+        max_depth: Optional[int] = None,
+        max_broken_link_checks: Optional[int] = None,
+        output_dir: Optional[str] = None,
+        embed_images: bool = False,
+        verbose: bool = False,
+        permission_attested: bool = False,
+    ) -> "ScanConfig":
+        """Merge explicit CLI overrides with settings defaults."""
+        return cls(
+            input_url=input_url,
+            max_pages=max_pages if max_pages is not None else settings.scan_max_pages,
+            max_depth=max_depth if max_depth is not None else settings.scan_max_depth,
+            max_broken_link_checks=(
+                max_broken_link_checks
+                if max_broken_link_checks is not None
+                else settings.scan_max_broken_link_checks
+            ),
+            request_timeout=settings.scan_request_timeout_seconds,
+            page_timeout=settings.scan_page_timeout_seconds,
+            psi_timeout=settings.scan_psi_timeout_seconds,
+            per_host_rps=settings.scan_per_host_rps,
+            max_total_seconds=settings.scan_max_total_seconds,
+            embed_images=embed_images,
+            output_dir=output_dir,
+            verbose=verbose,
+            permission_attested=permission_attested,
         )
 
 

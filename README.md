@@ -167,6 +167,40 @@ uv run python -m site_dna.cli analyze-visual --manifest-file "runs/.../manifest.
 uv run python -m site_dna.cli analyze-visual --visual-run-id "vis-e6b6128de9b5" --offline
 ```
 
+### Website Intelligence MVP Scan (Phases 1-9)
+
+The `scan` command produces a single schema-valid JSON report for one URL. Phase 1 writes a placeholder report with every module marked `skipped`; later phases fill in content, visual identity, PageSpeed, and SEO data.
+
+Environment setup:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -e .
+python -m pip install pytest pytest-asyncio ruff
+
+# Required from Phase 3 onward (browser rendering)
+playwright install chromium
+```
+
+Usage:
+
+```powershell
+# The permission flag is mandatory. Without it the CLI exits with code 2 and makes no network call.
+uv run python -m site_dna.cli scan "https://example.com" --i-have-permission
+
+# Optional limits and output location
+uv run python -m site_dna.cli scan "https://example.com" --i-have-permission `
+  --max-pages 10 --max-depth 2 --output-dir storage --verbose
+```
+
+Outputs:
+
+- `storage/{scan_id}/report.json` — the schema-valid report
+- `storage/{scan_id}/scan.log` — JSON-lines log with secrets redacted
+
+Relevant environment variables: `PSI_API_KEY` (optional), `STORAGE_DIR`, `ALLOW_PRIVATE_HOSTS` (only honored when `APP_ENV=test`), and the `SCAN_*` defaults listed in `.env.example`.
+
 ---
 
 ## 6. Automated Testing & Code Quality
@@ -312,3 +346,48 @@ site-dna/
 - **Phase 10:** Web Accessibility & WCAG 2.2 — W3C WCAG 2.2 Level A/AA conformance, semantics, keyboard navigation, contrast, and manual review tasks.
 - **Phase 11:** Strategic Intelligence & Unified Roadmap — cross-agent synthesis, deduplication, architectural conflict resolution, and 4-wave prioritized action backlog.
 - **Phase 12:** Executive Synthesis & Enterprise PDF Export — production-ready Arabic RTL PDF reports with Thmanyah typography, 10-axis executive scorecard, and responsive React frontend (Asaas UI kit).
+
+
+---
+
+## 10. Website Intelligence MVP (Phases 1-9)
+
+The repository also contains a standalone, deterministic website-audit MVP under `src/site_dna/`. It is separate from the older multi-phase AI platform and is exposed through the same `site-dna` CLI.
+
+### Install
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+crawl4ai-setup
+playwright install chromium
+```
+
+### Environment
+
+Copy `.env.example` to `.env`. `PSI_API_KEY` is optional: without it the PageSpeed module still tries the unauthenticated endpoint and records a warning. `STORAGE_DIR` controls where scan artifacts are written; `ALLOW_PRIVATE_HOSTS` is honored only when `APP_ENV=test`.
+
+### Usage
+
+```powershell
+$env:PYTHONPATH="src"
+.\.venv\Scripts\python.exe -m site_dna.cli scan https://example.com --i-have-permission
+.\.venv\Scripts\python.exe -m site_dna.cli scan https://example.com --i-have-permission --max-pages 20 --max-depth 2
+.\.venv\Scripts\python.exe -m site_dna.cli scan --export-schema
+```
+
+The CLI refuses to make network calls without `--i-have-permission` and exits with code 2. Completed and partial scans exit 0; failed scans exit 1; rejected scans exit 2.
+
+### Report format
+
+Each scan writes `storage/{scan_id}/report.json`, validated by the Pydantic `Report` model and `schemas/report.schema.json`. The report contains `project_info`, `website_content`, `visual_identity`, `performance`, `seo_analysis`, and `execution_summary`. Screenshots and long Markdown are file references unless `--embed-images` is used. A sanitized example is available at `docs/sample_report.json`.
+
+### Known limitations
+
+- INP is read only from CrUX field data; without field data it is `null` and TBT is reported as the lab proxy.
+- Color role assignment is heuristic and marked as inferred; only raw color counts are computed facts.
+- PSI cannot reach private or unreachable sites, and unauthenticated quota is low.
+- Full-page screenshots are capped at 16,000 px and marked `truncated=true` when clipped.
+- DNS rebinding remains a residual risk because the validated IP is not pinned at connect time.
+- `robots.txt` is obeyed; a disallowed start URL produces a rejected report.

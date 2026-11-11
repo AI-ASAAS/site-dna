@@ -1,6 +1,6 @@
 """Cross-Agent Conflict & Tradeoff Detection Engine for Site DNA Phase 11."""
 
-from site_dna.schemas.strategic_intelligence import ConflictRecord, ConflictType, UnifiedFinding
+from site_dna.schemas.strategic_intelligence import ConflictRecord, UnifiedFinding
 
 
 class ConflictDetector:

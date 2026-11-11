@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.0",
+  "scan_id": "sample-phase9",
+  "project_info": {
+    "input_url": "https://example.com",
+    "final_url": "https://example.com/",
+    "domain": "example.com",
+    "scan_timestamp": "2026-01-01T00:00:00Z",
+    "scan_status": "partial",
+    "processing_time_seconds": 27142494.687,
+    "permission_attested": true,
+    "tool_version": "0.1.0",
+    "config": {
+      "input_url": "https://example.com",
+      "max_pages": 5,
+      "max_depth": 2,
+      "max_broken_link_checks": 200,
+      "request_timeout": 20.0,
+      "page_timeout": 45.0,
+      "psi_timeout": 90.0,
+      "per_host_rps": 2.0,
+      "max_total_seconds": 300.0,
+      "embed_images": false,
+      "output_dir": null,
+      "verbose": false,
+      "permission_attested": true
+    }
+  },
+  "website_content": {
+    "status": "ok",
+    "reason": null,
+    "duration_ms": 1200,
+    "data": {
+      "pages": [
+        {
+          "url": "https://example.com/",
+          "final_url": "https://example.com/",
+          "http_status": 200,
+          "category": null,
+          "depth": null,
+          "fetched_at": null,
+          "fetch_ms": null,
+          "title": "Example Home",
+          "language": "en",
+          "markdown": null,
+          "markdown_file": null,
+          "markdown_chars": null,
+          "word_count": 120,
+          "headings": {
+            "h1": [],
+            "h2": [],
+            "h3": []
+          },
+          "heading_outline": [],
+          "paragraphs_count": null,
+          "lists_count": null,
+          "links": [],
+          "images": [],
+          "html_sha256": null,
+          "error": null
+        },
+        {
+          "url": "https://example.com/about",
+          "final_url": "https://example.com/about",
+          "http_status": 200,
+          "category": null,
+          "depth": null,
+          "fetched_at": null,
+          "fetch_ms": null,
+          "title": "Example About",
+          "language": "en",
+          "markdown": null,
+          "markdown_file": null,
+          "markdown_chars": null,
+          "word_count": 80,
+          "headings": {
+            "h1": [],
+            "h2": [],
+            "h3": []
+          },
+          "heading_outline": [],
+          "paragraphs_count": null,
+          "lists_count": null,
+          "links": [],
+          "images": [],
+          "html_sha256": null,
+          "error": null
+        }
+      ],
+      "total_pages": 2,
+      "total_words": 200,
+      "pages_failed": 0
+    },
+    "warnings": [],
+    "errors": []
+  },
+  "visual_identity": {
+    "status": "ok",
+    "reason": null,
+    "duration_ms": 300,
+    "data": {
+      "colors": {
+        "all": [
+          {
+            "hex": "#1A73E8",
+            "count": 4,
+            "weight": 1.0,
+            "share": 1.0,
+            "usages": {
+              "text": 0,
+              "background": 0,
+              "border": 0,
+              "svg": 0,
+              "button": 0,
+              "link": 0
+            },
+            "source": "computed"
+          }
+        ],
+        "roles": {
+          "background": [],
+          "text": [],
+          "primary": [],
+          "secondary": [],
+          "other": [],
+          "roles_method": null
+        }
+      },
+      "typography": {
+        "font_families": [],
+        "font_sizes": {},
+        "font_weights": {},
+        "heading_styles": {}
+      },
+      "screenshot": {
+        "path": "homepage.png",
+        "format": "png",
+        "bytes": 1024,
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "width": null,
+        "height": null
+      },
+      "css_variables": {},
+      "sampled_elements": 42,
+      "truncated_sampling": false
+    },
+    "warnings": [],
+    "errors": []
+  },
+  "performance": {
+    "status": "partial",
+    "reason": null,
+    "duration_ms": 4000,
+    "data": {
+      "mobile": {
+        "status": "ok",
+        "reason": null,
+        "score": 82,
+        "lab": {
+          "lcp_ms": 2500.0,
+          "fcp_ms": 1200.0,
+          "speed_index_ms": null,
+          "tbt_ms": null,
+          "cls": 0.05
+        },
+        "field": {
+          "lcp": {
+            "percentile": 2400.0,
+            "category": "good"
+          },
+          "inp": null,
+          "cls": null,
+          "source": "crux_url"
+        },
+        "opportunities": [],
+        "diagnostics": [],
+        "lighthouse_version": null,
+        "fetch_time": null,
+        "final_url": null,
+        "runtime_errors": []
+      },
+      "desktop": {
+        "status": "ok",
+        "reason": null,
+        "score": 94,
+        "lab": {
+          "lcp_ms": null,
+          "fcp_ms": null,
+          "speed_index_ms": null,
+          "tbt_ms": null,
+          "cls": null
+        },
+        "field": {
+          "lcp": null,
+          "inp": null,
+          "cls": null,
+          "source": null
+        },
+        "opportunities": [],
+        "diagnostics": [],
+        "lighthouse_version": null,
+        "fetch_time": null,
+        "final_url": null,
+        "runtime_errors": []
+      },
+      "notes": [
+        "INP requires CrUX field data."
+      ]
+    },
+    "warnings": [
+      "PSI_API_KEY is not configured; using unauthenticated quota."
+    ],
+    "errors": []
+  },
+  "seo_analysis": {
+    "status": "ok",
+    "reason": null,
+    "duration_ms": 400,
+    "data": {
+      "checks": [
+        {
+          "id": "title",
+          "scope": "page",
+          "url": "https://example.com/",
+          "status": "passed",
+          "value": null,
+          "message": null,
+          "threshold": null,
+          "confidence": "high"
+        },
+        {
+          "id": "sitemap",
+          "scope": "site",
+          "url": null,
+          "status": "warning",
+          "value": null,
+          "message": "No sitemap found.",
+          "threshold": null,
+          "confidence": "medium"
+        }
+      ],
+      "issues": [
+        {
+          "id": "sitemap",
+          "url": null,
+          "message": "No sitemap found.",
+          "confidence": "medium"
+        }
+      ],
+      "summary": {
+        "passed": 1,
+        "warning": 1,
+        "failed": 0,
+        "not_available": 0
+      }
+    },
+    "warnings": [],
+    "errors": []
+  },
+  "execution_summary": {
+    "module_results": {
+      "website_content": "ok",
+      "visual_identity": "ok",
+      "performance": "partial",
+      "seo_analysis": "ok"
+    },
+    "warnings": [
+      "PSI_API_KEY is not configured; using unauthenticated quota."
+    ],
+    "errors": [],
+    "timings": {
+      "website_content": 1.2,
+      "visual_identity": 0.3,
+      "performance": 4.0,
+      "seo_analysis": 0.4
+    }
+  }
+}

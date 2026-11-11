@@ -1,8 +1,8 @@
 """Strategic Intelligence Context Builder for Site DNA Phase 11."""
 
 import json
-from pathlib import Path
 import re
+from pathlib import Path
 from typing import Any, Optional
 
 from site_dna.analysis.strategic_intelligence.source_registry import SUPPORTED_SOURCE_AGENTS

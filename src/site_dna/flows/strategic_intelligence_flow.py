@@ -2,9 +2,9 @@
 
 import asyncio
 import concurrent.futures
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Optional
-import uuid
 
 from crewai.flow.flow import Flow, listen, start
 from pydantic import BaseModel, Field

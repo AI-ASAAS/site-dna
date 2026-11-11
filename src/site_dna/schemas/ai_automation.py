@@ -1,6 +1,7 @@
 """Pydantic schemas for AI & Automation Readiness Analysis (Site DNA)."""
 
-from typing import Any, Literal, Optional
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 

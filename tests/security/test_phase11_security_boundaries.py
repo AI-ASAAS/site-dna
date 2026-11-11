@@ -2,6 +2,7 @@
 
 import pytest
 from fastapi.testclient import TestClient
+
 from site_dna.analysis.strategic_intelligence.context_builder import StrategicContextBuilder
 from site_dna.api.main import create_app
 

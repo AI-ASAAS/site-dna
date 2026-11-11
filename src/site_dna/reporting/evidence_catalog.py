@@ -1,7 +1,6 @@
 """Evidence Catalog builder linking every finding and recommendation to verifiable technical evidence."""
 
 from pathlib import Path
-from typing import Any
 
 from site_dna.schemas.final_report import ReportEvidenceItem
 

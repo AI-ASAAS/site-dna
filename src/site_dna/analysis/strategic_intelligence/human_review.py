@@ -1,6 +1,5 @@
 """Human Review Workflow Generator for Site DNA Phase 11."""
 
-from typing import Any
 
 from site_dna.schemas.strategic_intelligence import (
     ConflictRecord,
@@ -32,7 +31,7 @@ class HumanReviewGenerator:
                         review_reason_ar=f"قرار موازنة استراتيجية: {c.description_ar or c.description}",
                         supporting_evidence_ids=c.supporting_evidence_ids,
                         question_for_reviewer=f"How should the team resolve the tension between {c.conflict_type}?",
-                        question_for_reviewer_ar=f"كيف يوجّه الفريق التقني بحسم التعارض بين متطلبات المجالين؟",
+                        question_for_reviewer_ar="كيف يوجّه الفريق التقني بحسم التعارض بين متطلبات المجالين؟",
                         recommended_options=[
                             c.proposed_resolution,
                             "Prioritize security/accessibility baseline strictly.",

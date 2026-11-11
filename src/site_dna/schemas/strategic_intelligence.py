@@ -1,8 +1,8 @@
 """Pydantic schemas for Site DNA Phase 11 — Strategic Intelligence & Unified Action Roadmap."""
 
+import uuid
 from datetime import datetime, timezone
 from typing import Any, Literal, Optional, Union
-import uuid
 
 from pydantic import BaseModel, Field, field_validator
 
