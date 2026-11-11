@@ -5,8 +5,8 @@ tailored directly to the target website's actual domain, services, and offerings
 rather than imposing generic SaaS software templates on every site.
 """
 
-from datetime import datetime, timezone
 import re
+from datetime import datetime, timezone
 from typing import Any, Optional
 
 from site_dna.core.logging import get_logger

@@ -6,13 +6,13 @@ and API endpoints to accurately determine whether a website employs conversation
 or intelligent agents, synthesizing tailored adoption blueprints or agentic upgrade roadmaps.
 """
 
-from datetime import datetime, timezone
 import json
-from pathlib import Path
 import re
-from typing import Any, Optional
 import urllib.parse
 import urllib.request
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
 
 from site_dna.core.logging import get_logger
 from site_dna.schemas.ai_automation import (
@@ -42,7 +42,6 @@ class AIAutomationAnalyzer:
         all_forms: list[str] = []
         all_links: list[str] = []
         dom_elements: list[dict[str, Any]] = []
-        pages_count = 0
 
         # Layer 1: Crawl data extraction
         if crawl_file.exists():
@@ -50,7 +49,6 @@ class AIAutomationAnalyzer:
                 cdata = json.loads(crawl_file.read_text(encoding="utf-8"))
                 target_url = cdata.get("website_info", {}).get("initial_url") or target_url
                 pages = cdata.get("pages", [])
-                pages_count = len(pages)
                 for p in pages:
                     p_title = p.get("title") or ""
                     p_desc = p.get("meta_description") or ""
@@ -128,9 +126,7 @@ class AIAutomationAnalyzer:
         detected_bot_name = live_assistant_name or ""
 
         all_text_lower = all_text.lower()
-        buttons_joined_lower = " ".join(all_buttons).lower()
         images_joined_lower = " ".join(all_image_srcs).lower()
-        forms_joined_lower = " ".join(all_forms).lower()
 
         # Check DOM elements from visual layer
         for el in dom_elements:

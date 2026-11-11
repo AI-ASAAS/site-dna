@@ -2,7 +2,6 @@
 
 import json
 from pathlib import Path
-import pytest
 
 from site_dna.analysis.ai_automation.analyzer import AIAutomationAnalyzer
 from site_dna.schemas.ai_automation import AIAutomationReport
