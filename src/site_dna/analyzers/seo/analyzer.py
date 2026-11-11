@@ -36,6 +36,7 @@ class BrokenLink:
     url: str
     status_code: int | None = None
     error: str | None = None
+    found_on: list[str] | None = None
 
 
 def _tree(html: str | None) -> LexborHTMLParser | None:
@@ -91,14 +92,15 @@ def _meta_content(tree: LexborHTMLParser, *, name: str | None = None, prop: str 
     return None
 
 
-def _canonical_href(tree: LexborHTMLParser) -> str | None:
+def _canonical_hrefs(tree: LexborHTMLParser) -> list[str]:
+    hrefs: list[str] = []
     for node in tree.css("link"):
         rel = (node.attributes.get("rel") or "").lower().split()
         if "canonical" in rel:
             href = (node.attributes.get("href") or "").strip()
             if href:
-                return href
-    return None
+                hrefs.append(href)
+    return hrefs
 
 
 def _heading_outline(page: PageData, tree: LexborHTMLParser | None) -> list[tuple[int, str]]:
@@ -241,8 +243,8 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                     "meta_robots",
                     scope="page",
                     url=page.url,
-                    status=CheckStatus.passed,
-                    value="index,follow (default)",
+                    status=CheckStatus.not_available,
+                    message="No robots meta tag or X-Robots-Tag header was present; this is normal.",
                     confidence=_CONFIDENCE_HIGH,
                 )
             )
@@ -282,8 +284,8 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
             )
         )
     else:
-        href = _canonical_href(tree)
-        if not href:
+        hrefs = _canonical_hrefs(tree)
+        if not hrefs:
             checks.append(
                 _check(
                     "canonical",
@@ -294,8 +296,20 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                     confidence=_CONFIDENCE_MEDIUM,
                 )
             )
+        elif len(hrefs) > 1:
+            checks.append(
+                _check(
+                    "canonical",
+                    scope="page",
+                    url=page.url,
+                    status=CheckStatus.failed,
+                    value=hrefs,
+                    message="Multiple canonical links were found; search engines may ignore them.",
+                    confidence=_CONFIDENCE_HIGH,
+                )
+            )
         else:
-            resolved = urljoin(page.final_url or page.url, href)
+            resolved = urljoin(page.final_url or page.url, hrefs[0])
             expected = canonicalize_url(page.final_url or page.url)
             actual = canonicalize_url(resolved)
             if actual != expected:
@@ -335,17 +349,23 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
         )
     else:
         required = ("og:title", "og:description", "og:image")
-        present = [prop for prop in required if _meta_content(tree, prop=prop)]
-        missing = [prop for prop in required if prop not in present]
-        if not present:
+        optional = ("og:url", "og:type")
+        tags = {
+            prop: _meta_content(tree, prop=prop)
+            for prop in (*required, *optional)
+            if _meta_content(tree, prop=prop)
+        }
+        present = [prop for prop in required if prop in tags]
+        missing = [prop for prop in required if prop not in tags]
+        if not tags:
             checks.append(
                 _check(
                     "open_graph",
                     scope="page",
                     url=page.url,
-                    status=CheckStatus.warning,
+                    status=CheckStatus.not_available,
                     value={"present": [], "missing": missing},
-                    message="Open Graph tags are missing.",
+                    message="No Open Graph tags were found.",
                     confidence=_CONFIDENCE_MEDIUM,
                 )
             )
@@ -356,7 +376,7 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                     scope="page",
                     url=page.url,
                     status=CheckStatus.warning,
-                    value={"present": present, "missing": missing},
+                    value={"present": present, "missing": missing, "tags": tags},
                     message=f"Open Graph tags are incomplete: {', '.join(missing)}.",
                     confidence=_CONFIDENCE_MEDIUM,
                 )
@@ -368,7 +388,7 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                     scope="page",
                     url=page.url,
                     status=CheckStatus.passed,
-                    value={"present": present, "missing": []},
+                    value={"present": present, "missing": [], "tags": tags},
                     confidence=_CONFIDENCE_HIGH,
                 )
             )
@@ -470,40 +490,47 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
             )
 
     if page.images:
-        missing_alt = [image.src for image in page.images if image.alt is None or not image.alt.strip()]
+        missing_alt = [image.src for image in page.images if image.alt is None]
+        decorative = [image.src for image in page.images if image.alt == ""]
+        non_empty = [image.src for image in page.images if image.alt and image.alt.strip()]
         image_count = len(page.images)
     elif tree is not None:
         missing_alt = []
+        decorative = []
+        non_empty = []
         image_count = 0
         for node in tree.css("img"):
             image_count += 1
+            src = node.attributes.get("src") or ""
             alt = node.attributes.get("alt")
-            if alt is None or not alt.strip():
-                missing_alt.append(node.attributes.get("src") or "")
+            if alt is None:
+                missing_alt.append(src)
+            elif alt.strip():
+                non_empty.append(src)
+            else:
+                decorative.append(src)
     else:
         missing_alt = []
+        decorative = []
+        non_empty = []
         image_count = 0
 
-    if image_count == 0:
-        checks.append(
-            _check(
-                "images_alt",
-                scope="page",
-                url=page.url,
-                status=CheckStatus.passed,
-                value={"images": 0, "missing_alt": 0},
-                confidence=_CONFIDENCE_HIGH,
-            )
-        )
-    elif missing_alt:
+    image_value = {
+        "images": image_count,
+        "non_empty_alt": len(non_empty),
+        "missing_alt": len(missing_alt),
+        "decorative": len(decorative),
+        "examples": missing_alt[:50],
+    }
+    if missing_alt:
         checks.append(
             _check(
                 "images_alt",
                 scope="page",
                 url=page.url,
                 status=CheckStatus.failed,
-                value={"images": image_count, "missing_alt": len(missing_alt), "examples": missing_alt[:10]},
-                message="One or more images have missing or empty alt text.",
+                value=image_value,
+                message="One or more images are missing the alt attribute.",
                 confidence=_CONFIDENCE_HIGH,
             )
         )
@@ -514,7 +541,7 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                 scope="page",
                 url=page.url,
                 status=CheckStatus.passed,
-                value={"images": image_count, "missing_alt": 0},
+                value=image_value,
                 confidence=_CONFIDENCE_HIGH,
             )
         )
@@ -541,7 +568,7 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                 "lang",
                 scope="page",
                 url=page.url,
-                status=CheckStatus.failed,
+                status=CheckStatus.warning,
                 message="html lang attribute is missing.",
                 confidence=_CONFIDENCE_HIGH,
             )
@@ -577,7 +604,7 @@ def _page_checks(page: PageData) -> list[CheckRecord]:
                     "viewport",
                     scope="page",
                     url=page.url,
-                    status=CheckStatus.failed,
+                    status=CheckStatus.warning,
                     message="Viewport meta tag is missing.",
                     confidence=_CONFIDENCE_HIGH,
                 )
@@ -615,6 +642,8 @@ def _site_checks(
     broken_links: list[BrokenLink] | None,
     broken_checked: int,
     broken_truncated: bool,
+    broken_warnings: list[str] | None = None,
+    link_total: int = 0,
 ) -> list[CheckRecord]:
     origin = _origin(pages, robots)
     checks: list[CheckRecord] = []
@@ -635,9 +664,9 @@ def _site_checks(
             _check(
                 "robots_txt",
                 scope="site",
-                status=CheckStatus.failed if blocked else CheckStatus.passed,
+                status=CheckStatus.warning if blocked else CheckStatus.passed,
                 value={"status": robots.status.value, "sitemaps": robots.sitemaps},
-                message="robots.txt blocks the scanned origin root." if blocked else None,
+                message="robots.txt disallows the scanned origin root." if blocked else None,
                 confidence=_CONFIDENCE_HIGH,
             )
         )
@@ -657,7 +686,7 @@ def _site_checks(
             _check(
                 "robots_txt",
                 scope="site",
-                status=CheckStatus.warning,
+                status=CheckStatus.not_available,
                 value={"status": robots.status.value, "warning": robots.warning},
                 message="robots.txt could not be fetched; crawlers default to allow-all.",
                 confidence=_CONFIDENCE_MEDIUM,
@@ -679,14 +708,26 @@ def _site_checks(
             _check(
                 "sitemap",
                 scope="site",
-                status=CheckStatus.warning if sitemap.truncated else CheckStatus.passed,
+                status=(
+                    CheckStatus.failed
+                    if not sitemap.urls
+                    else CheckStatus.warning
+                    if sitemap.truncated
+                    else CheckStatus.passed
+                ),
                 value={
                     "urls": len(sitemap.urls),
                     "source": sitemap.source,
                     "truncated": sitemap.truncated,
                     "warnings": sitemap.warnings,
                 },
-                message="Sitemap was truncated at the configured URL cap." if sitemap.truncated else None,
+                message=(
+                    "Sitemap was found but contains no URLs."
+                    if not sitemap.urls
+                    else "Sitemap was truncated at the configured URL cap."
+                    if sitemap.truncated
+                    else None
+                ),
                 confidence=_CONFIDENCE_HIGH,
             )
         )
@@ -706,9 +747,9 @@ def _site_checks(
             _check(
                 "sitemap",
                 scope="site",
-                status=CheckStatus.warning,
+                status=CheckStatus.failed,
                 value={"status": sitemap.status.value, "warnings": sitemap.warnings},
-                message="Sitemap could not be parsed or fetched.",
+                message="Sitemap exists but could not be parsed.",
                 confidence=_CONFIDENCE_MEDIUM,
             )
         )
@@ -762,12 +803,32 @@ def _site_checks(
 
     internal = sum(1 for page in pages for link in page.links if link.internal)
     external = sum(1 for page in pages for link in page.links if not link.internal)
+    nofollow = sum(
+        1 for page in pages for link in page.links if "nofollow" in (link.rel or "").lower().split()
+    )
+    unique_internal = {
+        canonicalize_url(link.url) for page in pages for link in page.links if link.internal
+    }
+    unique_external = {
+        canonicalize_url(link.url) for page in pages for link in page.links if not link.internal
+    }
+    other_schemes: Counter[str] = Counter()
+    for page in pages:
+        other_schemes.update(getattr(page, "non_http_link_counts", {}) or {})
     checks.append(
         _check(
             "links",
             scope="site",
             status=CheckStatus.passed,
-            value={"total": internal + external, "internal": internal, "external": external},
+            value={
+                "total": internal + external,
+                "internal": internal,
+                "external": external,
+                "nofollow": nofollow,
+                "unique_internal": len(unique_internal),
+                "unique_external": len(unique_external),
+                "other_schemes": dict(other_schemes),
+            },
             confidence=_CONFIDENCE_HIGH,
         )
     )
@@ -791,11 +852,18 @@ def _site_checks(
                 value={
                     "checked": broken_checked,
                     "broken": len(broken_links),
+                    "unchecked_count": max(0, link_total - broken_checked),
                     "examples": [
-                        {"url": item.url, "status_code": item.status_code, "error": item.error}
+                        {
+                            "url": item.url,
+                            "status_code": item.status_code,
+                            "error": item.error,
+                            "found_on": item.found_on or [],
+                        }
                         for item in broken_links[:25]
                     ],
                     "truncated": broken_truncated,
+                    "warnings": broken_warnings or [],
                 },
                 message=f"{len(broken_links)} link target(s) are broken.",
                 confidence=_CONFIDENCE_HIGH,
@@ -807,10 +875,24 @@ def _site_checks(
                 "broken_links",
                 scope="site",
                 status=CheckStatus.passed,
-                value={"checked": broken_checked, "broken": 0, "truncated": broken_truncated},
+                value={
+                    "checked": broken_checked,
+                    "broken": 0,
+                    "unchecked_count": max(0, link_total - broken_checked),
+                    "truncated": broken_truncated,
+                    "warnings": broken_warnings or [],
+                },
                 confidence=_CONFIDENCE_HIGH,
             )
         )
+
+    canonical_groups: dict[str, list[str]] = defaultdict(list)
+    for page in pages:
+        tree = _tree(page.raw_html)
+        hrefs = _canonical_hrefs(tree) if tree is not None else []
+        target = urljoin(page.final_url or page.url, hrefs[0]) if hrefs else page.url
+        canonical_groups[canonicalize_url(target)].append(page.url)
+    duplicate_canonicals = {url: urls for url, urls in canonical_groups.items() if len(urls) > 1}
 
     title_groups: dict[str, list[str]] = defaultdict(list)
     for page in pages:
@@ -834,17 +916,18 @@ def _site_checks(
                 confidence=_CONFIDENCE_MEDIUM,
             )
         )
-    elif duplicate_titles or duplicate_hashes:
+    elif duplicate_canonicals or duplicate_titles or duplicate_hashes:
         checks.append(
             _check(
                 "duplicates",
                 scope="site",
                 status=CheckStatus.warning,
                 value={
+                    "duplicate_canonical_targets": duplicate_canonicals,
                     "duplicate_titles": duplicate_titles,
                     "duplicate_content_hashes": duplicate_hashes,
                 },
-                message="Duplicate titles or content hashes were detected.",
+                message="Duplicate canonical targets, titles, or content hashes were detected.",
                 confidence=_CONFIDENCE_MEDIUM,
             )
         )
@@ -854,7 +937,11 @@ def _site_checks(
                 "duplicates",
                 scope="site",
                 status=CheckStatus.passed,
-                value={"duplicate_titles": {}, "duplicate_content_hashes": {}},
+                value={
+                    "duplicate_canonical_targets": {},
+                    "duplicate_titles": {},
+                    "duplicate_content_hashes": {},
+                },
                 confidence=_CONFIDENCE_HIGH,
             )
         )
@@ -879,14 +966,24 @@ def _build_analysis(checks: list[CheckRecord]) -> SeoAnalysis:
     return SeoAnalysis(checks=checks, issues=issues, summary=summary)
 
 
-async def _check_one_link(client, link) -> BrokenLink | None:
+async def _check_one_link(client, link, found_on: list[str]) -> tuple[BrokenLink | None, str | None]:
     try:
-        response = await client.safe_get(link.url)
+        if link.internal or not hasattr(client, "safe_head"):
+            response = await client.safe_get(link.url)
+            if link.internal and response.status_code == 405 and hasattr(client, "safe_head"):
+                response = await client.safe_head(link.url)
+        else:
+            response = await client.safe_head(link.url)
+            if response.status_code in (403, 405):
+                response = await client.safe_get(link.url)
     except Exception as exc:
-        return BrokenLink(url=link.url, error=str(exc))
-    if response.status_code >= 400:
-        return BrokenLink(url=link.url, status_code=response.status_code)
-    return None
+        return BrokenLink(url=link.url, error=str(exc), found_on=found_on), None
+    status = response.status_code
+    if status == 429 or (not link.internal and status == 403):
+        return None, f"{link.url}: HTTP {status} treated as a warning, not a broken link."
+    if status >= 400:
+        return BrokenLink(url=link.url, status_code=status, found_on=found_on), None
+    return None, None
 
 
 async def check_broken_links(
@@ -899,14 +996,17 @@ async def check_broken_links(
 ) -> tuple[list[BrokenLink], int, bool]:
     """Check unique link targets, internal first, bounded by ``max_checks``.
 
-    Returns ``(broken, checked_count, truncated)``.
+    Returns ``(broken, checked_count, truncated, warnings, total_unique)``.
     """
     unique: dict[str, LinkItem] = {}
+    found_on: dict[str, list[str]] = defaultdict(list)
     for page in pages:
         for link in page.links:
             key = canonicalize_url(link.url)
             if key not in unique:
                 unique[key] = link
+            if page.url not in found_on[key]:
+                found_on[key].append(page.url)
 
     ordered = sorted(unique.values(), key=lambda item: (not item.internal, item.url))
     if max_checks >= 0:
@@ -925,11 +1025,12 @@ async def check_broken_links(
 
     async def guarded(link):
         async with semaphore:
-            return await _check_one_link(client, link)
+            return await _check_one_link(client, link, found_on[canonicalize_url(link.url)])
 
     results = await asyncio.gather(*(guarded(link) for link in targets))
-    broken = [result for result in results if result is not None]
-    return broken, len(targets), truncated
+    broken = [item[0] for item in results if item[0] is not None]
+    warnings = [item[1] for item in results if item[1] is not None]
+    return broken, len(targets), truncated, warnings, len(unique)
 
 
 class SeoAnalyzer:
@@ -958,8 +1059,16 @@ class SeoAnalyzer:
         broken_links: list[BrokenLink] | None = None
         broken_checked = 0
         broken_truncated = False
+        broken_warnings: list[str] = []
+        link_total = 0
         if client is not None:
-            broken_links, broken_checked, broken_truncated = await check_broken_links(
+            (
+                broken_links,
+                broken_checked,
+                broken_truncated,
+                broken_warnings,
+                link_total,
+            ) = await check_broken_links(
                 client,
                 pages,
                 robots,
@@ -967,6 +1076,7 @@ class SeoAnalyzer:
             )
             if broken_truncated:
                 warnings.append(f"Broken-link checks were capped at {max_broken_links} targets.")
+            warnings.extend(broken_warnings)
 
         checks: list[CheckRecord] = []
         for page in pages:
@@ -979,6 +1089,8 @@ class SeoAnalyzer:
                 broken_links=broken_links,
                 broken_checked=broken_checked,
                 broken_truncated=broken_truncated,
+                broken_warnings=broken_warnings,
+                link_total=link_total,
             )
         )
 

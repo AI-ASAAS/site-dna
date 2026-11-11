@@ -19,7 +19,7 @@ from site_dna.models.report import (
 )
 from site_dna.models.seo import SeoAnalysis
 from site_dna.models.visual import VisualIdentity
-from site_dna.services.normalizer import registrable_domain
+from site_dna.services.normalizer import registrable_domain, sort_colors_by_weight
 
 MODULE_NAMES = ("website_content", "visual_identity", "performance", "seo_analysis")
 
@@ -101,6 +101,10 @@ def build_report(
     content_result = results.get("website_content")
     website_content = _as_website_content(content_result)
 
+    visual_result = _as_visual(results.get("visual_identity"))
+    if visual_result.data is not None:
+        visual_result.data.colors.all = sort_colors_by_weight(visual_result.data.colors.all)
+
     final_url = next(
         (page.final_url or page.url for page in website_content.pages if page.final_url or page.url),
         None,
@@ -144,7 +148,7 @@ def build_report(
             warnings=content_result.warnings if content_result else [],
             errors=content_result.errors if content_result else [],
         ),
-        visual_identity=_as_visual(results.get("visual_identity")),
+        visual_identity=visual_result,
         performance=_as_performance(results.get("performance")),
         seo_analysis=_as_seo(results.get("seo_analysis")),
         execution_summary=ExecutionSummary(

@@ -8,6 +8,19 @@ import pytest
 from site_dna.cli import main, run_scan_cli
 from site_dna.models.common import ModuleStatus
 from site_dna.models.report import Report
+from site_dna.scan import build_placeholder_report
+
+
+class _FakePipeline:
+    def __init__(self, context):
+        self.context = context
+
+    async def run(self, url=None):
+        return build_placeholder_report(
+            scan_id=self.context.scan_id,
+            input_url=url or self.context.config.input_url,
+            config=self.context.config.model_dump(mode="json"),
+        )
 
 
 def _report_paths(output_dir):
@@ -32,6 +45,7 @@ def test_scan_writes_schema_valid_placeholder_report(tmp_path) -> None:
         url="https://example.com",
         i_have_permission=True,
         output_dir=str(tmp_path),
+        pipeline_factory=_FakePipeline,
     )
 
     assert exit_code == 0
@@ -59,6 +73,7 @@ def test_scan_config_overrides_are_recorded(tmp_path) -> None:
         max_depth=1,
         embed_images=True,
         output_dir=str(tmp_path),
+        pipeline_factory=_FakePipeline,
     )
 
     assert exit_code == 0
@@ -85,6 +100,11 @@ def test_main_scan_missing_permission_exits_2(monkeypatch, tmp_path) -> None:
 
 
 def test_main_scan_with_permission_writes_report(monkeypatch, tmp_path) -> None:
+    original = run_scan_cli
+    monkeypatch.setattr(
+        "site_dna.cli.run_scan_cli",
+        lambda **kwargs: original(**kwargs, pipeline_factory=_FakePipeline),
+    )
     monkeypatch.setattr(
         sys,
         "argv",

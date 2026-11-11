@@ -6,17 +6,14 @@ Provides environment verification (doctor) and safe model diagnostics (smoke).
 import argparse
 import re
 import sys
-from datetime import datetime, timezone
 from importlib import import_module
 from pathlib import Path
 from typing import Any, Optional
-from uuid import uuid4
 
 from site_dna import __version__
-from site_dna.core.config import ScanConfig, get_settings
-from site_dna.core.context import ScanContext
-from site_dna.core.logging import get_logger, setup_logging, setup_scan_logging
-from site_dna.scan import build_placeholder_report, write_report
+from site_dna.app.scan import run_scan_cli, run_schema_cli
+from site_dna.core.config import get_settings
+from site_dna.core.logging import setup_logging
 
 
 def run_doctor() -> int:
@@ -1232,75 +1229,6 @@ def run_export_report(
     return 0
 
 
-def run_scan_cli(
-    url: str,
-    i_have_permission: bool,
-    max_pages: Optional[int] = None,
-    max_depth: Optional[int] = None,
-    output_dir: Optional[str] = None,
-    embed_images: bool = False,
-    verbose: bool = False,
-) -> int:
-    """Run a Phase 1 scan placeholder; requires explicit permission attestation."""
-    if not i_have_permission:
-        print(
-            "error: --i-have-permission is required before scanning a website",
-            file=sys.stderr,
-        )
-        return 2
-
-    settings = get_settings()
-    config = ScanConfig.from_settings(
-        settings,
-        input_url=url,
-        max_pages=max_pages,
-        max_depth=max_depth,
-        output_dir=output_dir,
-        embed_images=embed_images,
-        verbose=verbose,
-        permission_attested=True,
-    )
-    scan_id = uuid4().hex
-    storage_root = Path(output_dir) if output_dir else Path(settings.storage_dir)
-    setup_scan_logging(
-        scan_id,
-        storage_root,
-        level="DEBUG" if verbose else settings.log_level,
-    )
-
-    logger = get_logger("site_dna.scan")
-    context = ScanContext(
-        config=config,
-        settings=settings,
-        scan_id=scan_id,
-        output_dir=storage_root / scan_id,
-        logger=logger,
-        started_at=datetime.now(timezone.utc),
-    )
-
-    report = build_placeholder_report(
-        scan_id=scan_id,
-        input_url=url,
-        config=config.model_dump(),
-        tool_version=__version__,
-    )
-    report.project_info.processing_time_seconds = round(
-        (datetime.now(timezone.utc) - context.started_at).total_seconds(), 2
-    )
-    report_path = write_report(report, context.output_dir)
-
-    logger.info("scan placeholder written to %s", report_path)
-    print("=" * 60)
-    print(" Site DNA - Website Intelligence Scan (Phase 01 placeholder)")
-    print("=" * 60)
-    print(f" Scan status : {report.project_info.scan_status}")
-    print(f" Scan ID     : {scan_id}")
-    print(f" Target URL  : {url}")
-    print(f" Report      : {report_path}")
-    print("=" * 60)
-    return 0
-
-
 def main() -> None:
     """Main CLI entrypoint."""
     if hasattr(sys.stdout, "reconfigure"):
@@ -1316,11 +1244,11 @@ def main() -> None:
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # Command: scan (Website Intelligence MVP, Phase 01 placeholder)
+    # Command: scan (Website Intelligence MVP, Phases 1-9)
     scan_parser = subparsers.add_parser(
-        "scan", help="Run a website intelligence scan (Phase 01 placeholder)"
+        "scan", help="Run a complete website intelligence scan"
     )
-    scan_parser.add_argument("url", help="Target website URL")
+    scan_parser.add_argument("url", nargs="?", help="Target website URL")
     scan_parser.add_argument(
         "--i-have-permission",
         action="store_true",
@@ -1333,9 +1261,19 @@ def main() -> None:
         "--embed-images", action="store_true", help="Embed screenshots as base64 in the report"
     )
     scan_parser.add_argument("--verbose", action="store_true", help="Enable debug logging")
+    scan_parser.add_argument(
+        "--export-schema", action="store_true", help="Export the report JSON Schema and exit"
+    )
+    scan_parser.add_argument("--schema-output", default=None, help="Destination for --export-schema")
 
     # Command: doctor
     subparsers.add_parser("doctor", help="Verify environment, dependencies, and configuration")
+
+    # Command: schema
+    schema_parser = subparsers.add_parser(
+        "schema", help="Export the report JSON Schema"
+    )
+    schema_parser.add_argument("--output", default=None, help="Destination schema path")
 
     # Command: smoke
     smoke_parser = subparsers.add_parser("smoke", help="Execute diagnostic smoke tests")
@@ -1502,6 +1440,8 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "scan":
+        if args.export_schema:
+            sys.exit(run_schema_cli(args.schema_output))
         sys.exit(
             run_scan_cli(
                 url=args.url,
@@ -1515,6 +1455,8 @@ def main() -> None:
         )
     elif args.command == "doctor":
         sys.exit(run_doctor())
+    elif args.command == "schema":
+        sys.exit(run_schema_cli(args.output))
     elif args.command == "smoke":
         sys.exit(run_smoke(direct=args.direct, crew=args.crew, flow=args.flow, live=args.live))
     elif args.command == "discover":

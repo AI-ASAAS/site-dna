@@ -116,15 +116,17 @@ async def test_good_page_passes_core_page_checks():
 
 
 @pytest.mark.anyio
-async def test_missing_page_signals_fail_and_become_issues():
+async def test_missing_page_signals_are_reported_as_issues():
     html = """<html><head></head><body><img src="/no-alt.png"></body></html>"""
     page = _page(html=html, title="", language=None)
 
     result = await SeoAnalyzer().analyze([page])
 
     checks = _by_id(result)
-    for rule_id in ("title", "meta_description", "headings", "images_alt", "lang", "viewport"):
+    for rule_id in ("title", "meta_description", "headings", "images_alt"):
         assert checks[rule_id].status is CheckStatus.failed
+    for rule_id in ("lang", "viewport"):
+        assert checks[rule_id].status is CheckStatus.warning
     issue_ids = {issue.id for issue in result.data.issues}
     assert {"title", "meta_description", "headings", "images_alt", "lang", "viewport"} <= issue_ids
 
@@ -227,7 +229,7 @@ async def test_broken_links_are_internal_first_and_capped():
         }
     )
 
-    broken, checked, truncated = await check_broken_links(
+    broken, checked, truncated, warnings, total = await check_broken_links(
         client,
         [_page(links=[external, internal])],
         max_checks=1,
@@ -236,6 +238,8 @@ async def test_broken_links_are_internal_first_and_capped():
     assert truncated is True
     assert checked == 1
     assert client.calls == ["https://example.com/missing"]
+    assert warnings == []
+    assert total == 2
     assert broken[0].url == "https://example.com/missing"
     assert broken[0].status_code == 404
 
@@ -250,7 +254,7 @@ async def test_broken_links_respect_robots_and_transport_errors():
     public = LinkItem(url="https://example.com/public/x", text="Public", internal=True)
     client = FakeClient({"https://example.com/public/x": ConnectionError("boom")})
 
-    broken, checked, truncated = await check_broken_links(
+    broken, checked, truncated, warnings, total = await check_broken_links(
         client,
         [_page(links=[private, public])],
         robots=robots,
@@ -259,6 +263,8 @@ async def test_broken_links_respect_robots_and_transport_errors():
     assert truncated is False
     assert checked == 1
     assert client.calls == ["https://example.com/public/x"]
+    assert warnings == []
+    assert total == 2
     assert broken[0].error == "boom"
 
 

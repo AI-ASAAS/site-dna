@@ -153,12 +153,27 @@ def normalize_number(value: object) -> int | float | None:
 
 
 def normalize_list(values: object) -> list:
-    """Return a list copy, dropping ``None`` entries; non-sequences become empty."""
+    """Return a deduplicated list copy, dropping ``None`` entries and preserving order."""
     if values is None:
         return []
-    if isinstance(values, (list, tuple, set)):
-        return [value for value in values if value is not None]
-    return [values]
+    raw = list(values) if isinstance(values, (list, tuple, set)) else [values]
+    result: list = []
+    seen: set[str] = set()
+    for value in raw:
+        if value is None:
+            continue
+        key = repr(value)
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(value)
+    return result
+
+
+def sort_colors_by_weight(colors: object) -> list:
+    """Sort color records by descending weight, keeping unweighted entries last."""
+    records = normalize_list(colors)
+    return sorted(records, key=lambda color: -(normalize_number(getattr(color, "weight", None)) or 0))
 
 
 def normalize_issue(
