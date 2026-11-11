@@ -35,9 +35,17 @@ class CopyProposalsEngine:
             f = h1_findings[0]
             orig = f.source_excerpt or home_page.page_title or "غير محدد"
             site_topic = home_page.page_title or "المنصة"
-            proposed = f"الحل المتكامل لتحليل وتطوير المواقع بالذكاء الاصطناعي — {site_topic}"
-            if "en" in (home_page.language or "").lower():
-                proposed = f"Comprehensive AI-Powered Website Intelligence & Auditing — {site_topic}"
+            meta_desc = home_page.meta_description or ""
+            if meta_desc and len(meta_desc) > 15:
+                snippet = meta_desc.split(".")[0].strip()
+                proposed = f"{snippet} — {site_topic}"
+            elif home_page.service_descriptions:
+                first_srv = home_page.service_descriptions[0][:60].strip()
+                proposed = f"{first_srv} — {site_topic}"
+            elif "en" in (home_page.language or "").lower():
+                proposed = f"Premier Solutions & Services for {site_topic}"
+            else:
+                proposed = f"الحلول الرائدة والخدمات المتكاملة في {site_topic}"
 
             proposals.append(
                 CopyRewriteProposal(
@@ -95,7 +103,10 @@ class CopyProposalsEngine:
             first_p = home_page.paragraphs[0].get("text", "")
             if len(first_p.split()) > 10:
                 counter += 1
-                proposed_hero = f"{first_p[:120]}... احصل على تحليل دقيق وقابل للتنفيذ لتحسين حضورك الرقمي."
+                if "en" in (home_page.language or "").lower():
+                    proposed_hero = f"{first_p[:120]}... Contact us today to explore our tailored solutions and achieve optimal results."
+                else:
+                    proposed_hero = f"{first_p[:120]}... تواصل معنا اليوم لاستكشاف حلولنا المخصصة وتحقيق نتائج عملية استثنائية."
                 proposals.append(
                     CopyRewriteProposal(
                         proposal_id=f"PRP-{counter:02d}",

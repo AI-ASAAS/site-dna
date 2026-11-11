@@ -43,7 +43,14 @@ class PositioningAnalyzer:
             differentiators.append("Claims ease of use and low friction (Observed Claim)")
 
         if not differentiators:
-            differentiators.append("Differentiators focused on core domain features.")
+            if any(k in full_text for k in ("greenwall", "vertical garden", "landscape", "plants", "biophilic", "حدائق", "نباتات")):
+                differentiators.append("Claims biophilic design excellence and sustainable vertical engineering (Observed Claim)")
+            elif any(k in full_text for k in ("sports", "match", "broadcast", "stream", "رياضة", "بث")):
+                differentiators.append("Claims comprehensive tournament coverage and live streaming access (Observed Claim)")
+            elif any(k in full_text for k in ("portfolio", "data scientist", "software engineer", "مهندس")):
+                differentiators.append("Demonstrates production engineering delivery and applied AI expertise (Observed Claim)")
+            else:
+                differentiators.append("Differentiators focused on specialized domain features.")
 
         # 3. Target Customer Language
         audiences = []
@@ -53,8 +60,14 @@ class PositioningAnalyzer:
             audiences.append("Founders & fast-growing startups")
         if "developer" in full_text or "api" in full_text:
             audiences.append("Technical teams and software developers")
+        if any(k in full_text for k in ("greenwall", "vertical garden", "landscape", "architect", "interior")):
+            audiences.append("Property developers, commercial architects & living space designers")
+        if any(k in full_text for k in ("sports", "match", "league", "fans")):
+            audiences.append("Sports enthusiasts, fans & tournament viewers")
+        if any(k in full_text for k in ("portfolio", "hire", "consulting", "projects")):
+            audiences.append("Engineering leaders, technical recruiters & prospective clients")
         if not audiences:
-            audiences.append("General professional business teams")
+            audiences.append("Target industry buyers and professional decision-makers")
 
         # 4. Primary Benefits
         benefits = []
@@ -70,7 +83,14 @@ class PositioningAnalyzer:
                 ):
                     benefits.append(t.strip())
         if not benefits:
-            benefits = ["Operational efficiency", "Workflow modernization", "Cost control"]
+            if any(k in full_text for k in ("greenwall", "vertical garden", "landscape", "plants", "biophilic")):
+                benefits = ["Biophilic environmental enhancement", "Air quality & aesthetic uplift", "Low-maintenance sustainable living"]
+            elif any(k in full_text for k in ("sports", "match", "broadcast", "stream")):
+                benefits = ["Live match immersion", "Instant mobile access", "High-definition streaming"]
+            elif any(k in full_text for k in ("portfolio", "data scientist", "engineer")):
+                benefits = ["Scalable system architecture", "Applied machine learning results", "Clean production code"]
+            else:
+                benefits = ["Value delivery", "Workflow optimization", "Quality assurance"]
 
         # 5. Tone
         tone = "Professional Corporate"

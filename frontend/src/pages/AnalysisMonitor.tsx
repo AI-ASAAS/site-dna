@@ -28,9 +28,10 @@ import { CompetitorIntelligenceView } from './CompetitorIntelligenceView';
 import { SecurityPrivacyView } from './SecurityPrivacyView';
 import { AccessibilityView } from './AccessibilityView';
 import { StrategicIntelligenceView } from './StrategicIntelligenceView';
+import { AIAutomationView } from './AIAutomationView';
 import { ReportViewer } from './ReportViewer';
 
-type TabType = 'monitor' | 'overview' | 'screenshots' | 'findings' | 'recommendations' | 'competitors' | 'security' | 'accessibility' | 'strategic' | 'reports';
+type TabType = 'monitor' | 'overview' | 'screenshots' | 'findings' | 'recommendations' | 'ai_automation' | 'competitors' | 'security' | 'accessibility' | 'strategic' | 'reports';
 
 export function AnalysisMonitor() {
   const { runId } = useParams<{ runId: string }>();
@@ -153,6 +154,12 @@ export function AnalysisMonitor() {
             onClick={() => setActiveTab('recommendations')}
             label={t('recs.title')}
             count={run.total_recommendations}
+          />
+          <TabButton
+            active={activeTab === 'ai_automation'}
+            onClick={() => setActiveTab('ai_automation')}
+            label={t('monitor.view_ai_automation')}
+            icon={<Sparkles className="w-3.5 h-3.5 text-amber-500" />}
           />
           {run.stages?.competitor_intelligence && (
             <TabButton
@@ -310,6 +317,7 @@ export function AnalysisMonitor() {
       {activeTab === 'screenshots' && <ScreenshotExplorer runId={run.run_id} />}
       {activeTab === 'findings' && <FindingsExplorer runId={run.run_id} />}
       {activeTab === 'recommendations' && <RecommendationsViewer runId={run.run_id} />}
+      {activeTab === 'ai_automation' && <AIAutomationView runId={run.run_id} />}
       {activeTab === 'competitors' && <CompetitorIntelligenceView runId={run.run_id} />}
       {activeTab === 'security' && <SecurityPrivacyView runId={run.run_id} />}
       {activeTab === 'accessibility' && <AccessibilityView runId={run.run_id} />}
@@ -325,12 +333,14 @@ function TabButton({
   label,
   count,
   score,
+  icon,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   count?: any;
   score?: number | null;
+  icon?: React.ReactNode;
 }) {
   return (
     <button
@@ -341,6 +351,7 @@ function TabButton({
           : 'text-[var(--text-2)] hover:text-[var(--text)] hover:bg-[var(--glass-inset)]'
       }`}
     >
+      {icon && <span className="shrink-0">{icon}</span>}
       <span>{label}</span>
       {count !== undefined && count !== null && (
         <span

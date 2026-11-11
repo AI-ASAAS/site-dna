@@ -206,6 +206,17 @@ async def get_run_recommendations(
 # --- 7. Reports ---
 
 
+@router.get("/runs/{run_id}/ai-automation", summary="Get AI & Automation Analysis Report")
+async def get_run_ai_automation(
+    run_id: str,
+    coordinator: AnalysisCoordinator = Depends(get_coordinator),
+):
+    """Retrieve dedicated AI & Automation presence detection, maturity score, and tailored blueprint."""
+    from site_dna.analysis.ai_automation.analyzer import AIAutomationAnalyzer
+    analyzer = AIAutomationAnalyzer(base_dir=coordinator.base_dir)
+    return analyzer.analyze_run(run_id)
+
+
 @router.get("/runs/{run_id}/reports/{stage_id}", summary="Get Markdown or JSON report content")
 async def get_run_report(
     run_id: str,
