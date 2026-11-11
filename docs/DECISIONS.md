@@ -76,6 +76,13 @@ This file records every assumption made while implementing the Website Intellige
 - **INP note.** `Performance.notes` always contains the explanation that INP requires CrUX field data and is not produced by a Lighthouse lab run.
 - **Fixtures.** `recorded_429.json` is a real PSI quota response captured from the live endpoint. The success fixtures are synthetic responses shaped like the PSI v5 schema because the unauthenticated quota for this environment is zero. `scripts/record_psi_fixture.py` is the live-only recorder for replacing them with real success responses when a key is available. `respx` is a dev dependency used to mock the endpoint in tests.
 
+## Phase 7 - Technical SEO Analyzer
 
-
-
+- **Package location.** The spec's SEO package is `src/site_dna/analyzers/seo/`, separate from the older `site_dna.analysis.technical_seo` platform code. Rule IDs, thresholds, and docstrings live in `rules.py`; the analyzer is in `analyzer.py`; sitemap parsing is in `sitemap.py`.
+- **Page inputs.** Page-level checks use `PageData.raw_html` and the already-extracted `title`, `headings`, `images`, `links`, and `language` fields. `raw_html` remains excluded from `report.json`.
+- **X-Robots-Tag.** `PageData` now carries an internal `http_headers` mapping (also excluded from reports) so the analyzer can honor `X-Robots-Tag` when a renderer supplies response headers. The current Crawl4AI renderer does not populate it, so header-only directives are best-effort until the Phase 9 pipeline wires response headers through.
+- **Severity.** Missing title, meta description, H1, alt text, language, and viewport are failures. Length, canonical, Open Graph, meta-robots, hierarchy, robots.txt, sitemap, redirect, and duplicate-content findings are warnings. Broken links and 4xx/5xx crawled pages fail the relevant site check. Findings are never raised as module errors.
+- **Sitemap.** Declared robots.txt sitemaps are tried before `/sitemap.xml`. Sitemap indexes are followed up to three levels, bounded to 50,000 URLs and 10 MB per document; gzip documents are decompressed defensively even though httpx normally decodes them.
+- **Broken links.** Checks are internal-first, deduplicated with `canonicalize_url`, capped at 200 targets, and run with concurrency 10. Internal targets disallowed by robots.txt are skipped. Transport errors and 4xx/5xx responses are broken links.
+- **Duplicates.** Duplicate titles are grouped case-insensitively after trimming; duplicate content is grouped by the Phase 3 `html_sha256`.
+- **Summary.** `SeoSummary` counts every check, including `not_available`. `SeoAnalysis.issues` is the flat list of only `failed` and `warning` checks, matching the Phase 7 contract.
