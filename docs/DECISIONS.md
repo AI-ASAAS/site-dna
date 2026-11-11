@@ -62,5 +62,20 @@ This file records every assumption made while implementing the Website Intellige
 - **Embedding.** `base64` is populated only when `embed_images=True`; the default report keeps file references only.
 - **Fixtures.** `tests/fixtures/site_lazy/` uses SVG images with `loading="lazy"` and a recording HTTP server verifies both were fetched. `tests/fixtures/site_tall/` is 20,000 px tall to exercise clipping.
 
+## Phase 6 — PageSpeed Insights Client
+
+- **Fixed endpoint.** Requests go to `https://www.googleapis.com/pagespeedonline/v5/runPagespeed`. The submitted target URL was already validated in Phase 2, so the client does not repeat SSRF validation for the Google call.
+- **Retries.** Tenacity retries 429, 5xx, and timeouts up to three retries (four attempts total) with exponential backoff. A 400 is returned immediately and never retried.
+- **Reason codes.** Persistent 429 is `quota_exceeded`; timeouts are `timeout`; Google's `FAILED_DOCUMENT_REQUEST` / cannot-fetch messages are `invalid_url_or_unreachable`; malformed JSON and unusable payloads are `bad_response`; other non-2xx responses are `http_error`; a 403 without a configured key is `missing_api_key`.
+- **Missing key.** An unconfigured `PSI_API_KEY` does not fail the request. It adds a warning because PSI can answer unauthenticated requests, subject to stricter quotas.
+- **Field data.** URL-level CrUX metrics are used first, with per-metric fallback to `originLoadingExperience`. The result is labeled `crux_url` only when every field came from the URL response; any origin fallback labels it `crux_origin`. CrUX CLS percentiles are divided by 100 to normalize the API's scaled value.
+- **Lab data.** Numeric Lighthouse values are read from `numericValue`. `displayValue` is available for diagnostics, while the lab output contract keeps the numeric millisecond/CLS fields.
+- **Diagnostics.** Following the spec, numeric/informative audits with score < 0.9 and table/list audits with items are diagnostics. Unknown insight-style audit shapes are included with whatever `id/title/score/displayValue` fields exist. Core metric audits therefore also appear as diagnostics when their score is below 0.9.
+- **Extra Lighthouse metadata.** `StrategyPerformance` carries `fetch_time`, `final_url`, and `runtime_errors` in addition to the requested `lighthouse_version`, so the parsed values are not discarded.
+- **Logging.** Request logs include the target URL with any `key` query parameter removed. The `httpx` logger is set to WARNING and carries `SensitiveDataFilter`, so the API key cannot appear in captured logs.
+- **INP note.** `Performance.notes` always contains the explanation that INP requires CrUX field data and is not produced by a Lighthouse lab run.
+- **Fixtures.** `recorded_429.json` is a real PSI quota response captured from the live endpoint. The success fixtures are synthetic responses shaped like the PSI v5 schema because the unauthenticated quota for this environment is zero. `scripts/record_psi_fixture.py` is the live-only recorder for replacing them with real success responses when a key is available. `respx` is a dev dependency used to mock the endpoint in tests.
+
+
 
 

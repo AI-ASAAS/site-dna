@@ -1,0 +1,205 @@
+{
+  "lighthouseResult": {
+    "lighthouseVersion": "12.6.0",
+    "fetchTime": "2026-11-10T12:00:00.000Z",
+    "finalUrl": "https://example.com/",
+    "requestedUrl": "https://example.com/",
+    "runtimeError": null,
+    "runWarnings": [
+      "Lighthouse run completed with warnings"
+    ],
+    "categories": {
+      "performance": {
+        "score": 0.72,
+        "auditRefs": [
+          {"id": "largest-contentful-paint", "weight": 25, "group": "metrics"},
+          {"id": "first-contentful-paint", "weight": 10, "group": "metrics"},
+          {"id": "speed-index", "weight": 10, "group": "metrics"},
+          {"id": "total-blocking-time", "weight": 30, "group": "metrics"},
+          {"id": "cumulative-layout-shift", "weight": 25, "group": "metrics"},
+          {"id": "render-blocking-resources", "weight": 0, "group": "opportunities"},
+          {"id": "unused-css-rules", "weight": 0, "group": "opportunities"},
+          {"id": "uses-responsive-images", "weight": 0, "group": "opportunities"},
+          {"id": "uses-optimized-images", "weight": 0, "group": "diagnostics"},
+          {"id": "dom-size", "weight": 0, "group": "diagnostics"},
+          {"id": "third-party-summary", "weight": 0, "group": "diagnostics"},
+          {"id": "insight-lcp-breakdown", "weight": 0, "group": "insights"}
+        ]
+      }
+    },
+    "audits": {
+      "largest-contentful-paint": {
+        "id": "largest-contentful-paint",
+        "title": "Largest Contentful Paint",
+        "score": 0.65,
+        "displayValue": "3.2 s",
+        "numericValue": 3200,
+        "scoreDisplayMode": "numeric"
+      },
+      "first-contentful-paint": {
+        "id": "first-contentful-paint",
+        "title": "First Contentful Paint",
+        "score": 0.78,
+        "displayValue": "1.8 s",
+        "numericValue": 1800,
+        "scoreDisplayMode": "numeric"
+      },
+      "speed-index": {
+        "id": "speed-index",
+        "title": "Speed Index",
+        "score": 0.7,
+        "displayValue": "3.0 s",
+        "numericValue": 3000,
+        "scoreDisplayMode": "numeric"
+      },
+      "total-blocking-time": {
+        "id": "total-blocking-time",
+        "title": "Total Blocking Time",
+        "score": 0.6,
+        "displayValue": "420 ms",
+        "numericValue": 420,
+        "scoreDisplayMode": "numeric"
+      },
+      "cumulative-layout-shift": {
+        "id": "cumulative-layout-shift",
+        "title": "Cumulative Layout Shift",
+        "score": 0.9,
+        "displayValue": "0.08",
+        "numericValue": 0.08,
+        "scoreDisplayMode": "numeric"
+      },
+      "render-blocking-resources": {
+        "id": "render-blocking-resources",
+        "title": "Eliminate render-blocking resources",
+        "description": "Resources are blocking the first paint. [Learn more](https://developer.chrome.com/docs/lighthouse/performance/render-blocking-resources/).",
+        "score": 0.4,
+        "displayValue": "Potential savings of 1,200 ms",
+        "scoreDisplayMode": "numeric",
+        "details": {
+          "type": "opportunity",
+          "overallSavingsMs": 1200,
+          "overallSavingsBytes": 0,
+          "items": []
+        }
+      },
+      "unused-css-rules": {
+        "id": "unused-css-rules",
+        "title": "Reduce unused CSS",
+        "description": "Reduce unused rules from stylesheets. [Learn more](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules/).",
+        "score": 0.5,
+        "displayValue": "Potential savings of 45 KiB",
+        "scoreDisplayMode": "numeric",
+        "details": {
+          "type": "opportunity",
+          "overallSavingsMs": 0,
+          "overallSavingsBytes": 45000,
+          "items": []
+        }
+      },
+      "uses-responsive-images": {
+        "id": "uses-responsive-images",
+        "title": "Properly size images",
+        "description": "Serve images that are appropriately sized. [Learn more](https://developer.chrome.com/docs/lighthouse/performance/uses-responsive-images/).",
+        "score": 0.55,
+        "displayValue": "Potential savings of 120 KiB",
+        "scoreDisplayMode": "numeric",
+        "details": {
+          "type": "opportunity",
+          "overallSavingsMs": 800,
+          "overallSavingsBytes": 120000,
+          "items": []
+        }
+      },
+      "uses-optimized-images": {
+        "id": "uses-optimized-images",
+        "title": "Efficiently encode images",
+        "description": "Optimized images load faster. [Learn more](https://developer.chrome.com/docs/lighthouse/performance/uses-optimized-images/).",
+        "score": 0.5,
+        "displayValue": "Potential savings of 80 KiB",
+        "scoreDisplayMode": "numeric",
+        "details": {
+          "type": "table",
+          "items": [
+            {"url": "https://example.com/hero.jpg", "wastedBytes": 80000}
+          ]
+        }
+      },
+      "dom-size": {
+        "id": "dom-size",
+        "title": "Avoid an excessive DOM size",
+        "description": "A large DOM can increase memory and style calculation cost.",
+        "score": 0.8,
+        "displayValue": "1,234 elements",
+        "scoreDisplayMode": "numeric",
+        "details": {
+          "type": "table",
+          "items": [
+            {"statistic": "Total DOM Elements", "value": 1234}
+          ]
+        }
+      },
+      "third-party-summary": {
+        "id": "third-party-summary",
+        "title": "Minimize third-party usage",
+        "description": "Third-party code can block rendering.",
+        "score": 0.5,
+        "displayValue": "3 third-party origins",
+        "scoreDisplayMode": "informative",
+        "details": {
+          "type": "table",
+          "items": [
+            {"entity": "Example CDN", "transferSize": 120000}
+          ]
+        }
+      },
+      "insight-lcp-breakdown": {
+        "id": "insight-lcp-breakdown",
+        "title": "LCP breakdown",
+        "score": 0.7,
+        "displayValue": "Time to first byte 800 ms",
+        "details": {
+          "type": "new-insight",
+          "items": [
+            {"phase": "timeToFirstByte", "timing": 800}
+          ]
+        }
+      }
+    }
+  },
+  "loadingExperience": {
+    "id": "https://example.com/",
+    "overall_category": "AVERAGE",
+    "metrics": {
+      "LARGEST_CONTENTFUL_PAINT_MS": {
+        "percentile": 3200,
+        "category": "AVERAGE"
+      },
+      "INTERACTION_TO_NEXT_PAINT": {
+        "percentile": 180,
+        "category": "FAST"
+      },
+      "CUMULATIVE_LAYOUT_SHIFT_SCORE": {
+        "percentile": 8,
+        "category": "FAST"
+      }
+    }
+  },
+  "originLoadingExperience": {
+    "id": "https://example.com",
+    "overall_category": "AVERAGE",
+    "metrics": {
+      "LARGEST_CONTENTFUL_PAINT_MS": {
+        "percentile": 4000,
+        "category": "AVERAGE"
+      },
+      "INTERACTION_TO_NEXT_PAINT": {
+        "percentile": 250,
+        "category": "AVERAGE"
+      },
+      "CUMULATIVE_LAYOUT_SHIFT_SCORE": {
+        "percentile": 15,
+        "category": "AVERAGE"
+      }
+    }
+  }
+}

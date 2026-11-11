@@ -64,6 +64,9 @@ class StrategyPerformance(BaseModel):
     opportunities: list[Opportunity] = Field(default_factory=list)
     diagnostics: list[Diagnostic] = Field(default_factory=list)
     lighthouse_version: str | None = None
+    fetch_time: str | None = None
+    final_url: str | None = None
+    runtime_errors: list[str] = Field(default_factory=list)
 
 
 class Performance(BaseModel):

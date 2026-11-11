@@ -1,0 +1,94 @@
+{
+  "lighthouseResult": {
+    "lighthouseVersion": "12.6.0",
+    "fetchTime": "2026-11-10T12:00:01.000Z",
+    "finalUrl": "https://example.com/",
+    "requestedUrl": "https://example.com/",
+    "runtimeError": null,
+    "runWarnings": [],
+    "categories": {
+      "performance": {
+        "score": 0.95,
+        "auditRefs": [
+          {"id": "largest-contentful-paint", "weight": 25, "group": "metrics"},
+          {"id": "first-contentful-paint", "weight": 10, "group": "metrics"},
+          {"id": "speed-index", "weight": 10, "group": "metrics"},
+          {"id": "total-blocking-time", "weight": 30, "group": "metrics"},
+          {"id": "cumulative-layout-shift", "weight": 25, "group": "metrics"},
+          {"id": "uses-optimized-images", "weight": 0, "group": "diagnostics"}
+        ]
+      }
+    },
+    "audits": {
+      "largest-contentful-paint": {
+        "id": "largest-contentful-paint",
+        "title": "Largest Contentful Paint",
+        "score": 0.95,
+        "displayValue": "1.2 s",
+        "numericValue": 1200,
+        "scoreDisplayMode": "numeric"
+      },
+      "first-contentful-paint": {
+        "id": "first-contentful-paint",
+        "title": "First Contentful Paint",
+        "score": 0.98,
+        "displayValue": "0.8 s",
+        "numericValue": 800,
+        "scoreDisplayMode": "numeric"
+      },
+      "speed-index": {
+        "id": "speed-index",
+        "title": "Speed Index",
+        "score": 0.96,
+        "displayValue": "1.1 s",
+        "numericValue": 1100,
+        "scoreDisplayMode": "numeric"
+      },
+      "total-blocking-time": {
+        "id": "total-blocking-time",
+        "title": "Total Blocking Time",
+        "score": 0.99,
+        "displayValue": "20 ms",
+        "numericValue": 20,
+        "scoreDisplayMode": "numeric"
+      },
+      "cumulative-layout-shift": {
+        "id": "cumulative-layout-shift",
+        "title": "Cumulative Layout Shift",
+        "score": 0.99,
+        "displayValue": "0.01",
+        "numericValue": 0.01,
+        "scoreDisplayMode": "numeric"
+      },
+      "uses-optimized-images": {
+        "id": "uses-optimized-images",
+        "title": "Efficiently encode images",
+        "score": 0.95,
+        "displayValue": "Potential savings of 2 KiB",
+        "scoreDisplayMode": "numeric",
+        "details": {
+          "type": "table",
+          "items": []
+        }
+      }
+    }
+  },
+  "originLoadingExperience": {
+    "id": "https://example.com",
+    "overall_category": "FAST",
+    "metrics": {
+      "LARGEST_CONTENTFUL_PAINT_MS": {
+        "percentile": 4000,
+        "category": "AVERAGE"
+      },
+      "INTERACTION_TO_NEXT_PAINT": {
+        "percentile": 250,
+        "category": "AVERAGE"
+      },
+      "CUMULATIVE_LAYOUT_SHIFT_SCORE": {
+        "percentile": 15,
+        "category": "AVERAGE"
+      }
+    }
+  }
+}
